@@ -1,6 +1,6 @@
 # K8s operations using kubectl on local machine to remote tkg k8s cluster using ssh tunnel through bastion
 
-## UPDATE: Even quicker start
+## UPDATE: Even quicker start (with a bootstapped docker)
 
 **Prep .env**
 - `mv .env.sample .env`
@@ -18,7 +18,7 @@
 
 **Build and Run Docker**
 ```
-docker build . -t vspheretkgtunnel
+docker build -t vspheretkgtunnel -f Dockerfile.tunnelinit .
 docker run -it --rm -v ${PWD}:/root/ --add-host kubernetes:127.0.0.1 --name vspheretkgtunnel vspheretkgtunnel /bin/bash
 ```
 

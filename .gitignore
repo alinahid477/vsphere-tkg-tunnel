@@ -42,6 +42,7 @@ mvnw.cmd
 .env
 .bash_history
 .local
+*.nogit.*
 
 binaries/*
 !binaries/.gitkeep 
