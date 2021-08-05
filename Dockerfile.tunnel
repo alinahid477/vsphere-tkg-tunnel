@@ -23,5 +23,3 @@ RUN apt-get update && apt-get install -y \
 COPY binaries/kubectl-vsphere /usr/local/bin/ 
 COPY binaries/tunnelinit.sh /usr/local/ 
 RUN chmod +x /usr/local/tunnelinit.sh && chmod +x /usr/local/bin/kubectl-vsphere
-
-ENTRYPOINT ["/usr/local/tunnelinit.sh"]

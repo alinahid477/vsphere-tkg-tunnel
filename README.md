@@ -1,37 +1,42 @@
 # K8s operations using kubectl on local machine to remote tkg k8s cluster using ssh tunnel through bastion
 
-## UPDATE: Even quicker start (with a bootstapped docker)
+## Bootstrapped Quick start (recommended)
 
 **Prep .env**
 - `mv .env.sample .env`
 - Fill out the details
-    - BASTION_HOST=<the jump or bastion host ip or name. OR leave it blank if you have direct access to kubernetes endpoint and do not need a bastion host>
-    - BASTION_USERNAME= <username for login into the above host. Leave it blank if there is no bastion host.>
-    - TKG_SUPERVISOR_ENDPOINT= <find the supervisor endpoint from vsphere (eg: Menu>Workload management>clusters>Control Plane Node IP Address)>
-    - TKG_VSPHERE_CLUSTER_NAME=<the k8s cluster your are trying to access>
-    - TKG_VSPHERE_CLUSTER_ENDPOINT=<endpoint ip or hostname of the above cluster. Grab it from your vsphere environment. (Menu>Workload Management>Namespaces>Select the namespace where the k8s cluster resides>Compute>VMware Resources>Tanzu Kubernetes Clusters>Control Plane Address[grab the ip of the desired k8s])>
-    - TKG_VSPHERE_CLUSTER_USERNAME=<username for accessing the cluster>
-    - TKG_VSPHERE_CLUSTER_PASSWORD=<password for accessing the cluster>
+    - BASTION_HOST={the jump or bastion host ip or name. OR leave it blank if you have direct access to kubernetes endpoint and do not need a bastion host}
+    - BASTION_USERNAME={username for login into the above host. Leave it blank if there is no bastion host.}
+    - TKG_SUPERVISOR_ENDPOINT={find the supervisor endpoint from vsphere (eg: Menu>Workload management>clusters>Control Plane Node IP Address)}
+    - TKG_VSPHERE_CLUSTER_NAME={the k8s cluster your are trying to access}
+    - TKG_VSPHERE_CLUSTER_ENDPOINT={endpoint ip or hostname of the above cluster. Grab it from your vsphere environment. (Menu>Workload Management>Namespaces>Select the namespace where the k8s cluster resides>Compute>VMware Resources>Tanzu Kubernetes Clusters>Control Plane Address[grab the ip of the desired k8s])}
+    - TKG_VSPHERE_CLUSTER_USERNAME={username for accessing the cluster}
+    - TKG_VSPHERE_CLUSTER_PASSWORD={password for accessing the cluster}
 
 **Prep Binaries**
 - download `kubectl-vsphere` binaries from your vsphere (Menu>workload management>Namespaces>Select the namespace>Summary>Click link in the `Status` card) and place it in the Binaries directory
 
 **Build and Run Docker**
 ```
-docker build -t vspheretkgtunnel -f Dockerfile.tunnelinit .
-docker run -it --rm -v ${PWD}:/root/ --add-host kubernetes:127.0.0.1 --name vspheretkgtunnel vspheretkgtunnel /bin/bash
-```
-
-
-## Quick start
-
-### docker container
-```
 docker build . -t k8stunnel
 docker run -it --rm -v ${PWD}:/root/ --add-host kubernetes:127.0.0.1 --name k8stunnel k8stunnel /bin/bash
 ```
 
-### ssh tunnel
+The above docker, based on the environment variable supplied, will
+- Create tunnel
+- Login into k8s workload cluster
+- open a shell access through tunnel
+
+
+
+## Quick start (do it your self)
+
+### docker container
+```
+docker build . -t k8stunnel -f Dockerfile.tunnel
+docker run -it --rm -v ${PWD}:/root/ --add-host kubernetes:127.0.0.1 --name k8stunnel k8stunnel /bin/bash
+```
+### Create ssh tunnel yourself
 Once you are in the docker container shell, to create ssh tunnel run below:
 
 `ssh -i /root/.ssh/id_rsa -4 -fNT -L 443:<supervisor cluster endpoint or ip>:443 ubuntu@10.79.142.40`
@@ -86,7 +91,10 @@ Read through the below to understand why.
 Or blog post here: https://accordingtoalinahid.blogspot.com/2021/06/kubectl-using-ssh-tunnel-for-tkg-k8s.html
 
 
-## The WHY and HOW (in details):
+
+
+
+# The WHY and HOW (in details):
 
 ### Why bastion host?
 It is a very common (and widely adopted) architecture pattern to have a bastion host in a private network scenario. 
