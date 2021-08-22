@@ -343,7 +343,11 @@ If you want to double check this for your cluster you can do so by:
 
 
 #### handy commands
+
 SCP to upload download files from remote/bastion
-`scp -i tunnel/.ssh/id_rsa ubuntu@10.79.142.40:/path/to/remote/file /path/to/local/file`
-`netstat -ntlp | grep 6443`
-`fuser 6443/tcp`
+```
+kubectl delete TanzuKebernetesCluster tanzu-cluster-name
+scp -i tunnel/.ssh/id_rsa ubuntu@10.79.142.40:/path/to/remote/file /path/to/local/file
+netstat -ntlp | grep 6443`
+fuser 6443/tcp`
+```
