@@ -51,4 +51,4 @@ binaries/*
 !.kube/.gitkeep 
 .ssh/*
 !.ssh/.gitkeep 
-
+yamls/*
