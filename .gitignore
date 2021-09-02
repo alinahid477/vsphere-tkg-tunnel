@@ -43,10 +43,13 @@ mvnw.cmd
 .bash_history
 .local
 *.nogit.*
+.vmware-cna-saas
 
 binaries/*
 !binaries/.gitkeep 
-!binaries/tunnelinit.sh
+!binaries/init.sh
+!binaries/tunnel.sh
+!binaries/readparams.sh
 .kube/*
 !.kube/.gitkeep 
 .ssh/*

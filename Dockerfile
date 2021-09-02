@@ -27,7 +27,10 @@ RUN curl -o /usr/local/bin/jq -L https://github.com/stedolan/jq/releases/downloa
 COPY binaries/kubectl-vsphere /usr/local/bin/ 
 RUN chmod +x /usr/local/bin/kubectl-vsphere
 
-COPY binaries/tunnelinit.sh /usr/local/ 
-RUN chmod +x /usr/local/tunnelinit.sh
+COPY binaries/tmc /usr/local/bin/ 
+RUN chmod +x /usr/local/bin/tmc
 
-ENTRYPOINT ["/usr/local/tunnelinit.sh"]
+COPY binaries/init.sh /usr/local/ 
+RUN chmod +x /usr/local/init.sh
+
+ENTRYPOINT ["/usr/local/init.sh"]

@@ -26,6 +26,7 @@ The above docker, based on the environment variable supplied, will
 - Create tunnel
 - Login into k8s workload cluster
 - open a shell access through tunnel
+- The tunnel.sh is basically a wizard interface. `~/binaries/tunnel.sh --help`
 
 
 
@@ -350,4 +351,9 @@ kubectl delete TanzuKebernetesCluster tanzu-cluster-name
 scp -i tunnel/.ssh/id_rsa ubuntu@10.79.142.40:/path/to/remote/file /path/to/local/file
 netstat -ntlp | grep 6443`
 fuser 6443/tcp`
+```
+
+
+```
+tmc cluster create -t tkgs --name sampletmc --cluster-group anahid --management-cluster-name anahid-vsphere7-onecloud --provisioner-name tkg --worker-node-count 2 --instance-type best-effort-small --allowed-storage-classes k8s-policy --storage-class k8s-policy --version v1.20.2
 ```

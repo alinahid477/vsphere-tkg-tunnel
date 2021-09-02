@@ -1,9 +1,73 @@
 #!/bin/bash
 export $(cat /root/.env | xargs)
 export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
-chmod 600 /root/.ssh/id_rsa
-printf "\n\n\n***********Starting tunnel...*************\n"
 
+
+result=$(source ~/binaries/readparams.sh $@)
+# source ~/binaries/readparams.sh $@
+
+if [[ $result == *@("Error"|"help")* ]]
+then
+    printf "Error: $result\n"
+    source ~/binaries/readparams.sh --printhelp
+    exit
+else
+    export $(echo $result | xargs)
+fi
+
+if [[ -n $switchtosupervisor ]]
+then
+    unset TKG_VSPHERE_CLUSTER_ENDPOINT
+    unset TKG_VSPHERE_CLUSTER_NAME
+    isexists=$(netstat -ntlp | grep 6443)
+    if [[ -n $isexists ]]
+    then
+        fuser -k 6443/tcp >> /dev/null
+    fi
+    isexists=$(netstat -ntlp | grep 443)
+    if [[ -n $isexists ]]
+    then
+        fuser -k 443/tcp >> /dev/null
+    fi
+    rm ~/.kube/config
+fi
+
+if [[ -n $switchtoworkload ]]
+then
+    isexists=$(netstat -ntlp | grep 6443)
+    if [[ -n $isexists ]]
+    then
+        fuser -k 6443/tcp >> /dev/null
+    fi
+    isexists=$(netstat -ntlp | grep 443)
+    if [[ -n $isexists ]]
+    then
+        fuser -k 443/tcp >> /dev/null
+    fi
+    rm ~/.kube/config
+fi
+
+
+if [[ -n $clusterendpoint && -n $clustername ]]
+then
+    export TKG_VSPHERE_CLUSTER_ENDPOINT=$(echo $clusterendpoint | xargs)
+    export TKG_VSPHERE_CLUSTER_NAME=$(echo $clustername | xargs)
+    
+    isexists=$(netstat -ntlp | grep 6443)
+    if [[ -n $isexists ]]
+    then
+        fuser -k 6443/tcp >> /dev/null
+    fi
+    isexists=$(netstat -ntlp | grep 443)
+    if [[ -n $isexists ]]
+    then
+        fuser -k 443/tcp >> /dev/null
+    fi
+    
+    rm ~/.kube/config
+fi
+
+printf "\n\n\n***********Starting tunnel...*************\n"
 
 
 IS_KUBECTL_VSPHERE_EXISTS=$(kubectl vsphere)
@@ -113,7 +177,7 @@ else
     fi
 fi
 
-
+sleep 2
 printf "\n\n\n***********Verifying...*************\n"
 kubectl get ns
 
@@ -122,10 +186,19 @@ while true; do
     case $yn in
         [Yy]* ) printf "\nyou confirmed yes\n"; break;;
         [Nn]* ) printf "\n\nYou said no. \n\nExiting...\n\n"; exit;;
-        * ) echo "Please answer yes or no.";;
+        * ) echo "Please answer yes or no.";
     esac
 done
 
-printf "\n\n\nGoing into shell access.\n"
+printf "\n\n\nGoing into shell access.\n\n"
 
-/bin/bash
+
+if [[ -z $switchtosupervisor && -z $switchtoworkload && -z $clusterendpoint && -z $clustername ]]
+then
+    source ~/binaries/readparams.sh --printhelp
+else
+    unset switchtosupervisor
+    unset switchtoworkload
+    unset clusterendpoint
+    unset clustername
+fi
