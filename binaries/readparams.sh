@@ -3,7 +3,7 @@
 helpFunction()
 {
     printf "\nProvide valid params\n\n"
-    echo "Usage: $0"
+    echo "Usage: ~/baniries/tunnel.sh"
     echo -e "\t-s | --switch-to-supervisor no value needed. Signals this script to initiate login into TKG supervisor cluster"
     echo -e "\t-w | --switch-to-workload no value needed. Signals this script to initiate login into TKG workload cluster"
     echo -e "\t-c | --cluster-endpoint the endpoint of the workload cluster"
