@@ -1,5 +1,8 @@
 # K8s operations using kubectl on local machine to remote tkg k8s cluster using ssh tunnel through bastion
 
+<img src="images/logo.png" alt="Tunnel to vSphere" width=200 height=210/>
+
+
 ## Bootstrapped Quick start (recommended)
 
 **Prep .env**
@@ -27,6 +30,7 @@ The above docker, based on the environment variable supplied, will
 - Login into k8s workload cluster
 - open a shell access through tunnel
 - The tunnel.sh is basically a wizard interface. `~/binaries/tunnel.sh --help`
+- This wizard will let you switch back and forth between workload and management cluster.
 
 
 
