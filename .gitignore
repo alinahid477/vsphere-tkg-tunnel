@@ -50,8 +50,12 @@ binaries/*
 !binaries/init.sh
 !binaries/tunnel.sh
 !binaries/readparams.sh
+!binaries/readparams-createtkgscluster.sh
+!binaries/create-cluster.sh
 .kube/*
 !.kube/.gitkeep 
 .ssh/*
 !.ssh/.gitkeep 
 yamls/*
+tanzu-clusters/*
+!tanzu-clusters/.gitkeep
