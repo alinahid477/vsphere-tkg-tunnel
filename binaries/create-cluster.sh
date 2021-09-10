@@ -116,7 +116,7 @@ if [[ -z $defaultvalue_control_plane_count ]]
 then
     printf "\n\nHow many control plane would you like in this cluster.."
     printf "\nHint:"
-    echo -e "\tYou must provide a number ranging between 1-5"
+    echo -e "\tYou must provide a number 1 or 3"
     echo -e "\tDEFAULT: 1"
     while true; do
         read -p "Control Plane Count: " inp
@@ -125,7 +125,7 @@ then
             CONTROL_PLANE_COUNT=1
             break
         else
-            if [[ ! $inp =~ ^[1-5]+$  && $inp < 5 ]]
+            if [[ ! $inp =~ ^[1,3]+$ ]]
             then
                 printf "\nYou must provide a valid value.\n"
             else
