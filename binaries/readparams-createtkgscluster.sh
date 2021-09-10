@@ -12,8 +12,8 @@ unset defaultvalue_worker_node_storage
 
 helpFunction()
 {
-    printf "\nProvide valid params\n\n"
-    echo "Usage: ~/baniries/tunnel.sh"
+    printf "\n\n"
+    echo "Usage: ~/baniries/create-cluster.sh"
     echo -e "\t-w | --wizard no value needed. Signals this script to initiate wizard mode"
     echo -e "\t-n | --name name of the cluster"
     echo -e "\t-s | --vsphere-namespace vsphere-namespace where this cluster will be created"
@@ -24,8 +24,9 @@ helpFunction()
     echo -e "\t-w | --worker-node-count number of worker nodes"
     echo -e "\t-o | --worker-node-vm-class type of worker nodes (default classes: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-7351EEFF-4EF0-468F-A19B-6CEA40983D3D.html)"
     echo -e "\t-e | --worker-node-storage name of the storage policy that will be attached to worker nodes"
-
-    printf "\n\nNot all values are exposed here.\nFor more settings/config value please create a config yaml file and use kubectl apply.\n Checkout the details on Configuration Parameters for Tanzu Kubernetes Clusters is here: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-4E68C7F2-C948-489A-A909-C7A1F3DC545F.html\n\n"
+    echo -e "\t-h | --help"
+    
+    printf "\nNot all values are exposed here.\nFor more settings/config value please create a config yaml file and use kubectl apply.\nCheckout the details on Configuration Parameters for Tanzu Kubernetes Clusters documentation.\nLink: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-4E68C7F2-C948-489A-A909-C7A1F3DC545F.html\n\n"
     # exit 1 # Exit script after printing help
 }
 

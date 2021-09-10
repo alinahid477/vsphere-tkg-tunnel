@@ -1,7 +1,18 @@
 #!/bin/bash
-export $(cat /root/.env | xargs)
-export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
 
+unset switchtosupervisor
+unset switchtoworkload
+unset clusterendpoint
+unset clustername
+
+if [[ $@ == "--help"  && "${BASH_SOURCE[0]}" != "${0}" ]]
+then
+    # "${BASH_SOURCE[0]}" != "${0}" script is being sourced
+    # This condition is true ONLY when --help is passed in the init script.
+    # In this scenario we just want to print the help message and NOT exit.
+    source ~/binaries/readparams-createtkgscluster.sh --printhelp
+    return # We do not want to exit. We just dont want to continue the rest.
+fi
 
 result=$(source ~/binaries/readparams.sh $@)
 # source ~/binaries/readparams.sh $@
@@ -9,6 +20,7 @@ result=$(source ~/binaries/readparams.sh $@)
 if [[ $result == *@("Error"|"help")* ]]
 then
     printf "Error: $result\n"
+    printf "\nProvide valid params\n"
     source ~/binaries/readparams.sh --printhelp
     exit
 else
@@ -181,24 +193,16 @@ sleep 2
 printf "\n\n\n***********Verifying...*************\n"
 kubectl get ns
 
-while true; do
-    read -p "Confirm if the above cluster is correct? [y/n] " yn
-    case $yn in
-        [Yy]* ) printf "\nyou confirmed yes\n"; break;;
-        [Nn]* ) printf "\n\nYou said no. \n\nExiting...\n\n"; exit;;
-        * ) echo "Please answer yes or no.";
-    esac
-done
 
-printf "\n\n\nGoing into shell access.\n\n"
-
-
-if [[ -z $switchtosupervisor && -z $switchtoworkload && -z $clusterendpoint && -z $clustername ]]
+if [[ $SILENTMODE != 'y' ]]
 then
-    source ~/binaries/readparams.sh --printhelp
-else
-    unset switchtosupervisor
-    unset switchtoworkload
-    unset clusterendpoint
-    unset clustername
+    while true; do
+        read -p "Confirm if the above cluster is correct? [y/n] " yn
+        case $yn in
+            [Yy]* ) printf "\nyou confirmed yes\n"; break;;
+            [Nn]* ) printf "\n\nYou said no. \n\nExiting...\n\n"; exit;;
+            * ) echo "Please answer yes or no.";
+        esac
+    done
 fi
+printf "\n\n\nGoing into shell access.\n\n"

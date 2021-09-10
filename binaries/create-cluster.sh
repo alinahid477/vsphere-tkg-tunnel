@@ -1,17 +1,25 @@
 #!/bin/bash
-export $(cat /root/.env | xargs) > /dev/null
-export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
+
+if [[ $@ == "--help"  && "${BASH_SOURCE[0]}" != "${0}" ]]
+then
+    # "${BASH_SOURCE[0]}" != "${0}" script is being sourced
+    # This condition is true ONLY when --help is passed in the init script.
+    # In this scenario we just want to print the help message and NOT exit.
+    source ~/binaries/readparams-createtkgscluster.sh --printhelp
+    return # We do not want to exit. We just dont want to continue the rest.
+fi
 
 result=$(source ~/binaries/readparams-createtkgscluster.sh $@)
 if [[ $result == *@("error"|"help")* ]]
 then
+    printf "\nProvide valid params\n\n"
     source ~/binaries/readparams-createtkgscluster.sh --printhelp
     exit
 else
     export $(echo $result | xargs)
 fi
 
-if [[ -z $wizardmode ]]
+if [[ -z $wizardmode || $SILENTMODE == 'y' ]]
 then
     if [[ -z $defaultvalue_name || -z $defaultvalue_vsphere_namespace || -z $defaultvalue_kubernetes_version ||
         -z $defaultvalue_control_plane_count || -z $defaultvalue_control_plane_vm_class || -z $defaultvalue_control_plane_storage ||
@@ -142,6 +150,7 @@ then
         if [[ -z $inp ]]
         then
             CONTROL_PLANE_VM_CLASS=best-effort-small
+            break
         else
             CONTROL_PLANE_VM_CLASS=$inp
             break
@@ -163,6 +172,7 @@ then
         if [[ -z $inp ]]
         then
             CONTROL_PLANE_STORAGE=k8s-policy
+            break
         else
             CONTROL_PLANE_STORAGE=$inp
             break
@@ -212,6 +222,7 @@ then
         if [[ -z $inp ]]
         then
             WORKER_NODE_VM_CLASS=best-effort-small
+            break
         else
             WORKER_NODE_VM_CLASS=$inp
             break
@@ -233,6 +244,7 @@ then
         if [[ -z $inp ]]
         then
             WORKER_NODE_STORAGE=k8s-policy
+            break
         else
             WORKER_NODE_STORAGE=$inp
             break
@@ -242,18 +254,48 @@ else
     WORKER_NODE_STORAGE=$defaultvalue_worker_node_storage
 fi
 
+printf "\nCreating definition file /tmp/$BUILDER_NAME.yaml\n"
+cp /usr/local/tanzu-cluster.template /tmp/$CLUSTER_NAME.yaml
+sleep 1
 
 sed -i 's/CLUSTER_NAME/'$CLUSTER_NAME'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's/VSPHERE_NAMESPACE/'$VSPHERE_NAMESPACE'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's/KUBERNETES_VERSION/'$KUBERNETES_VERSION'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's/CONTROL_PLANE_COUNT/'$CONTROL_PLANE_COUNT'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's/CONTROL_PLANE_VM_CLASS/'$CONTROL_PLANE_VM_CLASS'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/CONTROL_PLANE_STORAGE_CLASS/'$CONTROL_PLANE_STORAGE_CLASS'/g' /tmp/$CLUSTER_NAME.yaml
+sed -i 's/CONTROL_PLANE_STORAGE_CLASS/'$CONTROL_PLANE_STORAGE'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's/WORKER_NODE_COUNT/'$WORKER_NODE_COUNT'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's/WORKER_NODE_VM_CLASS/'$WORKER_NODE_VM_CLASS'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/WORKER_NODE_STORAGE_CLASS/'$WORKER_NODE_STORAGE_CLASS'/g' /tmp/$CLUSTER_NAME.yaml
+sed -i 's/WORKER_NODE_STORAGE_CLASS/'$WORKER_NODE_STORAGE'/g' /tmp/$CLUSTER_NAME.yaml
 
 if [[ -d "/root/tanzu-clusters" ]]
 then
     cp /tmp/$CLUSTER_NAME.yaml /root/tanzu-clusters/
+    if [[ $SILENTMODE == 'y' ]]
+    then
+        approved='y'
+    else
+        while true; do
+            read -p "Review generated file ~/tanzu-clusters/$CLUSTER_NAME.yaml and confirm or modify and confirm to proceed further? [y/n] " yn
+            case $yn in
+                [Yy]* ) approved="y"; printf "\nyou confirmed yes\n"; break;;
+                [Nn]* ) printf "\n\nYou said no. \n\nExiting...\n\n"; exit;;
+                * ) echo "Please answer yes or no.";;
+            esac
+        done
+    fi
+    if [[ $approved == 'y' ]]
+    then
+        printf "\nApplying file ~/tanzu-clusters/$CLUSTER_NAME.yaml\n";
+        kubectl apply -f /root/tanzu-clusters/$CLUSTER_NAME.yaml
+    fi
+else
+    printf "\nApplying file ~/tmp/$CLUSTER_NAME.yaml\n";
+    kubectl apply -f /tmp/$CLUSTER_NAME.yaml
 fi
+
+sleep 1
+printf "\n\nCluster creation in progress.\nIt will take some time.\nGrab a cuppa in the meant time.\n\n"
+sleep 1
+printf "\n\nWizard's job is done\nExiting wizard...\n\n"
+exit
