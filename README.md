@@ -26,15 +26,29 @@ docker run -it --rm -v ${PWD}:/root/ --add-host kubernetes:127.0.0.1 --name k8st
 ```
 
 The above docker, based on the environment variable supplied, will
-- Create tunnel
-- Login into k8s workload cluster
-- open a shell access through tunnel
-- The tunnel.sh is basically a wizard interface. `~/binaries/tunnel.sh --help`
-- This wizard will let you switch back and forth between workload and management cluster.
+- Tunnel Wizard `~/binaries/tunnel.sh --help`
+    - Create tunnel
+    - Login into k8s workload cluster
+    - open a shell access through tunnel
+    - This wizard will let you switch back and forth between workload and management cluster with simple flags (*`--switch-to-supervisor` `--switch-to-workload`*).
+    - The wizard will also let you login to other workload cluster with simple flags (*`--cluster-endpoint`, `--cluster-name`*)
+    - The vsphere sso login is taken care of in the background
+- Create Cluster Wizard `~/binaries/create-cluster.sh --help`
+    - Create vSphere with Tanzu workload cluster
+    - Wizard interface to create cluster that simpleflies the process.
+    - launch this wizard using flag `~/binaries/create-cluster.sh --wizard`
+    - OR, in a pipeline scenario pass parameters to create cluster. 
 
 
 
-## Quick start (do it your self)
+## That's it
+
+
+
+
+***Read below if you want know how things are working under the hood***
+
+# Do it your self
 
 ### docker container
 ```
