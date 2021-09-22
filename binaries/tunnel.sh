@@ -133,7 +133,7 @@ then
             kubectl config use-context $TKG_SUPERVISOR_ENDPOINT
         else
             printf "\n\n\n***********Login into Workload cluster...*************\n"            
-            kubectl vsphere login --tanzu-kubernetes-cluster-name $TKG_VSPHERE_CLUSTER_NAME --server kubernetes --insecure-skip-tls-verify -u $TKG_VSPHERE_CLUSTER_USERNAME
+            kubectl vsphere login --tanzu-kubernetes-cluster-name $TKG_VSPHERE_CLUSTER_NAME --server $TKG_SUPERVISOR_ENDPOINT --insecure-skip-tls-verify -u $TKG_VSPHERE_CLUSTER_USERNAME
             kubectl config use-context $TKG_VSPHERE_CLUSTER_NAME
         fi
         
