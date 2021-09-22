@@ -52,6 +52,7 @@ binaries/*
 !binaries/readparams.sh
 !binaries/readparams-createtkgscluster.sh
 !binaries/create-cluster.sh
+!binaries/tanzu-cluster.template
 .kube/*
 !.kube/.gitkeep 
 .ssh/*

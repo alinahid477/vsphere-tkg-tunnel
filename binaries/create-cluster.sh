@@ -144,12 +144,12 @@ then
     printf "\n\nWhat type of vm type would you like in this cluster.."
     printf "\nHint:"
     echo -e "\tYou must provide a valid value from here: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-7351EEFF-4EF0-468F-A19B-6CEA40983D3D.html"
-    echo -e "\tDEFAULT: best-effort-small"
+    [[ -n $DEFAULT_CONTROL_PLANE_VM_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_CONTROL_PLANE_VM_CLASS"
     while true; do
         read -p "Control Plane VM Type: " inp
-        if [[ -z $inp ]]
+        if [[ -z $inp && -n $DEFAULT_CONTROL_PLANE_VM_CLASS ]]
         then
-            CONTROL_PLANE_VM_CLASS=best-effort-small
+            CONTROL_PLANE_VM_CLASS=$DEFAULT_CONTROL_PLANE_VM_CLASS
             break
         else
             CONTROL_PLANE_VM_CLASS=$inp
@@ -216,12 +216,12 @@ then
     printf "\n\nWhat type of vm type would you like in this cluster.."
     printf "\nHint:"
     echo -e "\tYou must provide a valid value from here: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-7351EEFF-4EF0-468F-A19B-6CEA40983D3D.html"
-    echo -e "\tDEFAULT: best-effort-small"
+    [[ -n $DEFAULT_WORKER_NODE_VM_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_WORKER_NODE_VM_CLASS"
     while true; do
         read -p "Worker Node VM Type: " inp
-        if [[ -z $inp ]]
+        if [[ -z $inp && -n $DEFAULT_WORKER_NODE_VM_CLASS ]]
         then
-            WORKER_NODE_VM_CLASS=best-effort-small
+            WORKER_NODE_VM_CLASS=$DEFAULT_WORKER_NODE_VM_CLASS
             break
         else
             WORKER_NODE_VM_CLASS=$inp

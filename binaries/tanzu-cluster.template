@@ -1,0 +1,17 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1
+kind: TanzuKubernetesCluster
+metadata: 
+  name: CLUSTER_NAME
+  namespace: VSPHERE_NAMESPACE
+spec: 
+  distribution: 
+    version: KUBERNETES_VERSION
+  topology: 
+    controlPlane: 
+      count: CONTROL_PLANE_COUNT
+      class: CONTROL_PLANE_VM_CLASS
+      storageClass: CONTROL_PLANE_STORAGE_CLASS
+    workers: 
+      count: WORKER_NODE_COUNT
+      class: WORKER_NODE_VM_CLASS
+      storageClass: WORKER_NODE_STORAGE_CLASS
