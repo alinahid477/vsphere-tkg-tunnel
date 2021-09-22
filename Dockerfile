@@ -26,11 +26,11 @@ RUN curl -o /usr/local/bin/jq -L https://github.com/stedolan/jq/releases/downloa
 COPY binaries/tanzu-cluster.template /usr/local/ 
 RUN chmod +x /usr/local/tanzu-cluster.template
 
-COPY binaries/kubectl-vsphere /usr/local/bin/ 
-RUN chmod +x /usr/local/bin/kubectl-vsphere
+# COPY binaries/kubectl-vsphere /usr/local/bin/ 
+# RUN chmod +x /usr/local/bin/kubectl-vsphere
 
-COPY binaries/tmc /usr/local/bin/ 
-RUN chmod +x /usr/local/bin/tmc
+# COPY binaries/tmc /usr/local/bin/ 
+# RUN chmod +x /usr/local/bin/tmc
 
 COPY binaries/init.sh /usr/local/ 
 RUN chmod +x /usr/local/init.sh
