@@ -1,5 +1,6 @@
 #!/bin/bash
-
+export $(cat /root/.env | xargs)
+export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
 quotify()
 {
     qx=$1
