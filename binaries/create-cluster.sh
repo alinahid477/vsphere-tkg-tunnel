@@ -1,5 +1,40 @@
 #!/bin/bash
 
+quotify()
+{
+    qx=$1
+    firstCharacter=${qx:0:1}
+    lastCharacter=${qx: -1}
+    if [[ ! $firstCharacter =~ [\"] ]]
+    then
+        qx=\"$qx 
+    fi
+    if [[ ! $lastCharacter =~ [\"] ]]
+    then
+        qx=$qx\" 
+    fi
+    block=$qx
+}
+
+process_cidr_blocks()
+{
+    CIDR_BLOCKS=""
+    bx=$1
+    if [[ $bx =~ [,] ]]
+    then
+        for block in $(echo $bx | tr ',' '\n')
+        do
+            quotify $block
+            CIDR_BLOCKS=$CIDR_BLOCKS$block,
+            printf "\n#$CIDR_BLOCKS"
+        done
+        CIDR_BLOCKS=${CIDR_BLOCKS::-1}
+    else
+        quotify $bx
+        CIDR_BLOCKS=$block
+    fi
+}
+
 if [[ $@ == "--help"  && "${BASH_SOURCE[0]}" != "${0}" ]]
 then
     # "${BASH_SOURCE[0]}" != "${0}" script is being sourced
@@ -277,6 +312,9 @@ else
     SERVICES_CIDR_BLOCKS=$defaultvalue_services_cidr_blocks
 fi
 
+process_cidr_blocks $SERVICES_CIDR_BLOCKS
+SERVICES_CIDR_BLOCKS=$CIDR_BLOCKS
+
 
 unset POD_CIDR_BLOCKS
 if [[ -z $defaultvalue_pod_cidr_blocks ]]
@@ -301,6 +339,9 @@ else
     POD_CIDR_BLOCKS=$defaultvalue_pod_cidr_blocks
 fi
 
+process_cidr_blocks $POD_CIDR_BLOCKS
+POD_CIDR_BLOCKS=$CIDR_BLOCKS
+
 printf "\nCreating definition file /tmp/$CLUSTER_NAME.yaml\n"
 cp /usr/local/tanzu-cluster.template /tmp/$CLUSTER_NAME.yaml
 sleep 1
@@ -314,8 +355,8 @@ sed -i 's/CONTROL_PLANE_STORAGE_CLASS/'$CONTROL_PLANE_STORAGE'/g' /tmp/$CLUSTER_
 sed -i 's/WORKER_NODE_COUNT/'$WORKER_NODE_COUNT'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's/WORKER_NODE_VM_CLASS/'$WORKER_NODE_VM_CLASS'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's/WORKER_NODE_STORAGE_CLASS/'$WORKER_NODE_STORAGE'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/POD_CIDR_BLOCKS/'$POD_CIDR_BLOCKS'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/SERVICES_CIDR_BLOCKS/'$SERVICES_CIDR_BLOCKS'/g' /tmp/$CLUSTER_NAME.yaml
+sed -i 's#POD_CIDR_BLOCKS#'$POD_CIDR_BLOCKS'#g' /tmp/$CLUSTER_NAME.yaml
+sed -i 's#SERVICES_CIDR_BLOCKS#'$SERVICES_CIDR_BLOCKS'#g' /tmp/$CLUSTER_NAME.yaml
 
 if [[ -d "/root/tanzu-clusters" ]]
 then
