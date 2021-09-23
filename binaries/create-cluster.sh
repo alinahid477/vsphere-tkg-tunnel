@@ -166,12 +166,12 @@ then
     printf "\n\nWhat is the name of storage policy would you like to attach to this control plane.."
     printf "\nHint:"
     echo -e "\tYou must provide a valid value"
-    echo -e "\tDEFAULT: k8s-policy"
+    [[ -n $DEFAULT_STORAGE_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_STORAGE_CLASS"
     while true; do
         read -p "Control Plane Storage Policy: " inp
-        if [[ -z $inp ]]
+        if [[ -z $inp && -n $DEFAULT_STORAGE_CLASS ]]
         then
-            CONTROL_PLANE_STORAGE=k8s-policy
+            CONTROL_PLANE_STORAGE=$DEFAULT_STORAGE_CLASS
             break
         else
             CONTROL_PLANE_STORAGE=$inp
@@ -238,12 +238,12 @@ then
     printf "\n\nWhat is the name of storage policy would you like to attach to the worker.."
     printf "\nHint:"
     echo -e "\tYou must provide a valid value"
-    echo -e "\tDEFAULT: k8s-policy"
+    [[ -n $DEFAULT_STORAGE_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_STORAGE_CLASS"
     while true; do
         read -p "Worker Storage Policy: " inp
-        if [[ -z $inp ]]
+        if [[ -z $inp && -n $DEFAULT_STORAGE_CLASS ]]
         then
-            WORKER_NODE_STORAGE=k8s-policy
+            WORKER_NODE_STORAGE=$DEFAULT_STORAGE_CLASS
             break
         else
             WORKER_NODE_STORAGE=$inp
