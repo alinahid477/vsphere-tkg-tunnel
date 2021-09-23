@@ -270,7 +270,11 @@ sed -i 's/WORKER_NODE_STORAGE_CLASS/'$WORKER_NODE_STORAGE'/g' /tmp/$CLUSTER_NAME
 
 if [[ -d "/root/tanzu-clusters" ]]
 then
+    printf "\nGenerating Tanzu Cluster File..."
     cp /tmp/$CLUSTER_NAME.yaml /root/tanzu-clusters/
+    sleep 1
+    chmod 777 /root/tanzu-clusters/$CLUSTER_NAME.yaml
+    printf "\nDone.\n\n"
     if [[ $SILENTMODE == 'y' ]]
     then
         approved='y'
