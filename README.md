@@ -17,7 +17,9 @@
     - TKG_VSPHERE_CLUSTER_PASSWORD={password for accessing the cluster}
     - DEFAULT_CONTROL_PLANE_VM_CLASS=best-effort-small {A default value for convenience. change value suitable to your envrionment from here: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-7351EEFF-4EF0-468F-A19B-6CEA40983D3D.html}
     - DEFAULT_WORKER_NODE_VM_CLASS=best-effort-small {A default value for convenience. change value suitable to your envrionment from here: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-7351EEFF-4EF0-468F-A19B-6CEA40983D3D.html}
-    - DEFAULT_STORAGE_CLASS="k8s-policy" {A default value for for convenience}
+    - DEFAULT_STORAGE_CLASS="k8s-policy" {A default value for convenience when creating a new cluster via wizard. change it accordingly or keep the default as it is. https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-4E68C7F2-C948-489A-A909-C7A1F3DC545F.html}
+    - DEFAULT_SERVICES_CIDR_BLOCKS="10.96.0.0/12" {A default value for convenience when creating a new cluster via wizard. change it accordingly or keep the default as it is. https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-4E68C7F2-C948-489A-A909-C7A1F3DC545F.html}
+    - DEFAULT_POD_CIDR_BLOCKS="192.168.0.0/16" {A default value for convenience when creating a new cluster via wizard. change it accordingly or keep the default as it is. https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-4E68C7F2-C948-489A-A909-C7A1F3DC545F.html }
 
 **Prep Binaries**
 - download `kubectl-vsphere` binaries from your vsphere (Menu>workload management>Namespaces>Select the namespace>Summary>Click link in the `Status` card) and place it in the Binaries directory

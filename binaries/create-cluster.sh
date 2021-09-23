@@ -254,7 +254,54 @@ else
     WORKER_NODE_STORAGE=$defaultvalue_worker_node_storage
 fi
 
-printf "\nCreating definition file /tmp/$BUILDER_NAME.yaml\n"
+unset SERVICES_CIDR_BLOCKS
+if [[ -z $defaultvalue_services_cidr_blocks ]]
+then
+    printf "\n\nWhat are the services cidr blocks.."
+    printf "\nHint:"
+    echo -e "\tcomma separated string values in cids format"
+    echo -e "\tYou must provide a valid value"
+    [[ -n $DEFAULT_SERVICES_CIDR_BLOCKS ]] && echo -e "\tDEFAULT: $DEFAULT_SERVICES_CIDR_BLOCKS"
+    while true; do
+        read -p "services cidr blocks: " inp
+        if [[ -z $inp && -n $DEFAULT_SERVICES_CIDR_BLOCKS ]]
+        then
+            SERVICES_CIDR_BLOCKS=$DEFAULT_SERVICES_CIDR_BLOCKS
+            break
+        else
+            SERVICES_CIDR_BLOCKS=$inp
+            break
+        fi
+    done
+else
+    SERVICES_CIDR_BLOCKS=$defaultvalue_services_cidr_blocks
+fi
+
+
+unset POD_CIDR_BLOCKS
+if [[ -z $defaultvalue_pod_cidr_blocks ]]
+then
+    printf "\n\nWhat are the pod cidr blocks.."
+    printf "\nHint:"
+    echo -e "\tcomma separated string values in cids format"
+    echo -e "\tYou must provide a valid value"
+    [[ -n $DEFAULT_POD_CIDR_BLOCKS ]] && echo -e "\tDEFAULT: $DEFAULT_POD_CIDR_BLOCKS"
+    while true; do
+        read -p "pod cidr blocks: " inp
+        if [[ -z $inp && -n $DEFAULT_POD_CIDR_BLOCKS ]]
+        then
+            POD_CIDR_BLOCKS=$DEFAULT_POD_CIDR_BLOCKS
+            break
+        else
+            POD_CIDR_BLOCKS=$inp
+            break
+        fi
+    done
+else
+    POD_CIDR_BLOCKS=$defaultvalue_pod_cidr_blocks
+fi
+
+printf "\nCreating definition file /tmp/$CLUSTER_NAME.yaml\n"
 cp /usr/local/tanzu-cluster.template /tmp/$CLUSTER_NAME.yaml
 sleep 1
 
@@ -267,6 +314,8 @@ sed -i 's/CONTROL_PLANE_STORAGE_CLASS/'$CONTROL_PLANE_STORAGE'/g' /tmp/$CLUSTER_
 sed -i 's/WORKER_NODE_COUNT/'$WORKER_NODE_COUNT'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's/WORKER_NODE_VM_CLASS/'$WORKER_NODE_VM_CLASS'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's/WORKER_NODE_STORAGE_CLASS/'$WORKER_NODE_STORAGE'/g' /tmp/$CLUSTER_NAME.yaml
+sed -i 's/POD_CIDR_BLOCKS/'$POD_CIDR_BLOCKS'/g' /tmp/$CLUSTER_NAME.yaml
+sed -i 's/SERVICES_CIDR_BLOCKS/'$SERVICES_CIDR_BLOCKS'/g' /tmp/$CLUSTER_NAME.yaml
 
 if [[ -d "/root/tanzu-clusters" ]]
 then

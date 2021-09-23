@@ -1,6 +1,6 @@
 #!/bin/bash
 
-helpFunction()
+helpFunction1()
 {
     printf "\n\n"
     echo "Usage: ~/baniries/tunnel.sh"
@@ -43,7 +43,7 @@ while true ; do
                 * ) clustername=$2; output=$(printf "$output\nclustername=$clustername"); shift 2 ;;
             esac ;;
         -h | --help ) printf "help"; break;; 
-        -p | --printhelp ) helpFunction; break;; 
+        -p | --printhelp ) helpFunction1; break;; 
         -- ) shift; break;; 
         * ) break;;
     esac

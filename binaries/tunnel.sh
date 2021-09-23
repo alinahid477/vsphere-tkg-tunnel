@@ -10,7 +10,7 @@ then
     # "${BASH_SOURCE[0]}" != "${0}" script is being sourced
     # This condition is true ONLY when --help is passed in the init script.
     # In this scenario we just want to print the help message and NOT exit.
-    source ~/binaries/readparams-createtkgscluster.sh --printhelp
+    source ~/binaries/readparams.sh --printhelp
     return # We do not want to exit. We just dont want to continue the rest.
 fi
 

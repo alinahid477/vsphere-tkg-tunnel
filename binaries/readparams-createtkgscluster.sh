@@ -24,6 +24,8 @@ helpFunction()
     echo -e "\t-w | --worker-node-count number of worker nodes"
     echo -e "\t-o | --worker-node-vm-class type of worker nodes (default classes: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-7351EEFF-4EF0-468F-A19B-6CEA40983D3D.html)"
     echo -e "\t-e | --worker-node-storage name of the storage policy that will be attached to worker nodes"
+    echo -e "\t-f | --services-cidr-blocks string value of service cidr block eg: \"10.96.0.0/12\",\"10.97.0.0/12\" etc"
+    echo -e "\t-g | --pod-cidr-blocks string value of pod cidr block eg: \"192.168.0.0/16\" etc"
     echo -e "\t-h | --help"
     
     printf "\nNot all values are exposed here.\nFor more settings/config value please create a config yaml file and use kubectl apply.\nCheckout the details on Configuration Parameters for Tanzu Kubernetes Clusters documentation.\nLink: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-4E68C7F2-C948-489A-A909-C7A1F3DC545F.html\n\n"
@@ -34,9 +36,10 @@ helpFunction()
 output=""
 
 # read the options
-TEMP='getopt -o wn:s:c:m:d:w:o:e:k:hp --long wizard,name:,vsphere-namespace:,'
+TEMP='getopt -o wn:s:c:m:d:w:o:e:f:g:k:hp --long wizard,name:,vsphere-namespace:,'
 TEMP+='control-plane-count:,control-plane-vm-class:,control-plane-storage:,'
 TEMP+='worker-node-count:,worker-node-vm-class:,worker-node-storage:,'
+TEMP+='services-cidr-blocks:,pod-cidr-blocks:,'
 TEMP+='kubernetes-version:,'
 TEMP+='help,printhelp -n'
 TEMP=`$TEMP $0 -- "$@"`
@@ -94,6 +97,16 @@ while true ; do
             case "$2" in
                 "" ) output=$(printf "$output\ndefaultvalue_worker_node_storage=") ; shift 2 ;;
                 * ) output=$(printf "$output\ndefaultvalue_worker_node_storage=$2"); shift 2 ;;
+            esac ;;
+        -f | --services-cidr-blocks )
+            case "$2" in
+                "" ) output=$(printf "$output\ndefaultvalue_services_cidr_blocks=") ; shift 2 ;;
+                * ) output=$(printf "$output\ndefaultvalue_services_cidr_blocks=$2"); shift 2 ;;
+            esac ;;
+        -g | --pod-cidr-blocks )
+            case "$2" in
+                "" ) output=$(printf "$output\ndefaultvalue_pod_cidr_blocks=") ; shift 2 ;;
+                * ) output=$(printf "$output\ndefaultvalue_pod_cidr_blocks=$2"); shift 2 ;;
             esac ;;
         -h | --help ) printf "help"; break;; 
         -p | --printhelp ) helpFunction; break;; 
