@@ -2,7 +2,7 @@
 
 <img src="images/logo.png" alt="Tunnel to vSphere" width=200 height=210/>
 
-**Use this wizard to**
+*After vSphere with Tanzu is enabled on vCentre cluster,* **Use this wizard to**
 - Create TKG cluster (both in wizard mode or pipeline mode)
 - Switch back and forth between supervisor and workload cluster with just 1 command.
 - Use this docker image in your pipeline to create cluster
