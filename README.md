@@ -1,6 +1,12 @@
-# K8s operations using kubectl on local machine to remote tkg k8s cluster using ssh tunnel through bastion
+# vSphere with Tanzu Wizard
 
 <img src="images/logo.png" alt="Tunnel to vSphere" width=200 height=210/>
+
+**Use this wizard to**
+- Create TKG cluster (both in wizard mode or pipeline mode)
+- Switch back and forth between supervisor and workload cluster with just 1 command.
+- Use this docker image in your pipeline to create cluster
+- Establish tunnel through bastion host (optional, if needed) in private cluster scenario
 
 
 ## Bootstrapped Quick start (recommended)
@@ -64,7 +70,7 @@ The above docker, based on the environment variable supplied, will
 
 ***Read below if you want know how things are working under the hood***
 
-# Do it your self
+# Do it yourself
 
 ### docker container
 ```
