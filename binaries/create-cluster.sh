@@ -131,16 +131,19 @@ then
     echo -e "\tDEFAULT: $latestversion (hit enter to accept)"
     while true; do
         read -p "Kubernetes Version: " inp
-        if [[ -z $inp ]]
+        if [[ -z $inp && -n $latestversion ]]
         then
             KUBERNETES_VERSION=$latestversion
         else
-            isexist=$(kubectl get tkr | grep $inp)
-            if [[ -z $isexist ]]
+            if [[ -n $inp ]]
             then
-                printf "\nKubernetes version does not exist."
-            else
-                KUBERNETES_VERSION=$inp
+                isexist=$(kubectl get tkr | grep $inp)
+                if [[ -z $isexist ]]
+                then
+                    printf "\nKubernetes version does not exist."
+                else
+                    KUBERNETES_VERSION=$inp
+                fi
             fi
         fi
         if [[ -n $KUBERNETES_VERSION ]]
@@ -203,6 +206,7 @@ else
     CONTROL_PLANE_VM_CLASS=$defaultvalue_control_plane_vm_class
 fi
 
+DEFAULT_STORAGE_CLASS=$(kubectl get storageclass -o jsonpath='{.items[-1:].metadata.name}')
 unset CONTROL_PLANE_STORAGE
 if [[ -z $defaultvalue_control_plane_storage ]]
 then
