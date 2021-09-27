@@ -124,23 +124,30 @@ fi
 unset KUBERNETES_VERSION
 if [[ -z $defaultvalue_kubernetes_version ]]
 then
+    latestversion=$(kubectl get tkr --sort-by=.metadata.name -o jsonpath='{.items[-1:].metadata.name}' | grep -Po '(?<=v)[^-]+' | awk 'NR==1{print $1}')
     printf "\n\nWhich kubernetes version would you like to use for this k8s cluster?"
     printf "\nHint:"
     echo -e "\tMust be an existing version from kubectl get tkr"
+    echo -e "\tDEFAULT: $latestversion (hit enter to accept)"
     while true; do
         read -p "Kubernetes Version: " inp
         if [[ -z $inp ]]
         then
-            printf "\nThis is a required field. You must provide a value.\n"
+            KUBERNETES_VERSION=$latestversion
         else
             isexist=$(kubectl get tkr | grep $inp)
             if [[ -z $isexist ]]
             then
-                printf "\nKubernetes version does not exist. You must provide a valid value.\n"
+                printf "\nKubernetes version does not exist."
             else
                 KUBERNETES_VERSION=$inp
-                break
             fi
+        fi
+        if [[ -n $KUBERNETES_VERSION ]]
+        then
+            break
+        else
+            printf "\nYou must provide a valid value.\n"
         fi
     done
 else

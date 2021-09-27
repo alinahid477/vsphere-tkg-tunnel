@@ -39,10 +39,10 @@ then
 fi
 
 
-source ~/binaries/tunnel.sh
+source ~/binaries/tkgwizard.sh
 
 printf "\nAvailable wizards are:\n"
-source ~/binaries/tunnel.sh --help
+source ~/binaries/tkgwizard.sh --help
 printf "\n=========================================================\n"
 source ~/binaries/create-cluster.sh --help
 

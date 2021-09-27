@@ -47,7 +47,7 @@ chmod +x start.sh
 
 
 The above docker, based on the environment variable supplied, will
-- Tunnel Wizard `~/binaries/tunnel.sh --help`
+- Tunnel Wizard `~/binaries/tkgwizard.sh --help`
     - Create tunnel
     - Login into k8s workload cluster
     - open a shell access through tunnel

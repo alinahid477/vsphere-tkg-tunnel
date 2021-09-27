@@ -48,7 +48,7 @@ mvnw.cmd
 binaries/*
 !binaries/.gitkeep 
 !binaries/init.sh
-!binaries/tunnel.sh
+!binaries/tkgwizard.sh
 !binaries/readparams.sh
 !binaries/readparams-createtkgscluster.sh
 !binaries/create-cluster.sh
