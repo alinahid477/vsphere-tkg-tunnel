@@ -31,10 +31,20 @@
 - download `kubectl-vsphere` binaries from your vsphere (Menu>workload management>Namespaces>Select the namespace>Summary>Click link in the `Status` card) and place it in the Binaries directory
 
 **Build and Run Docker**
+
+*Windows*
 ```
-docker build . -t k8stunnel
-docker run -it --rm -v ${PWD}:/root/ --add-host kubernetes:127.0.0.1 --name k8stunnel k8stunnel /bin/bash
+start.bat k8stunnel {forcebuild}
 ```
+
+*linux or mac* 
+```
+chmod +x start.sh
+./start.sh k8stunnel {forcebuild}
+```
+
+*optionally pass forcebuild to force the build. Otherwise it will detect if image existing it will use the image and if image not existing it will build then run*
+
 
 The above docker, based on the environment variable supplied, will
 - Tunnel Wizard `~/binaries/tunnel.sh --help`
