@@ -33,16 +33,16 @@
 
 *Windows*
 ```
-start.bat k8stunnel {forcebuild}
+start.bat k8stunnel
 ```
 
 *linux or mac* 
 ```
 chmod +x start.sh
-./start.sh k8stunnel {forcebuild}
+./start.sh k8stunnel
 ```
 
-*optionally pass forcebuild to force the build. Otherwise it will detect if image existing it will use the image and if image not existing it will build then run*
+***Optionally use a second parameter `forcebuild` to force docker build (eg: `start.sh tbs forecebuild`). Otherwise if the image exists it will ignore building.***
 
 
 The above docker, based on the environment variable supplied, will
