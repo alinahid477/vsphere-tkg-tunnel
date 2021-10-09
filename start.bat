@@ -1,8 +1,22 @@
 @ECHO OFF
 PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& './converter.ps1'"
+
+set name=%1
+set doforcebuild=%2
+
+if "%name%" == "forcebuild" (
+    set name=
+    set doforcebuild="forcebuild"    
+)
+
+if if "%name%" == "" (
+    echo "assuming default name: k8stunnel"
+    set name="k8stunnel"
+)
+
 set isexists=
-FOR /F "delims=" %%i IN ('docker images  ^| findstr /i "%1"') DO set "isexists=%%i"
-echo "%isexists%"
+FOR /F "delims=" %%i IN ('docker images  ^| findstr /i "%name"') DO set "isexists=%%i"
+echo "docker image name %isexists% already exists. Will avoide build if not exists"
 
 set dobuild=
 if "%isexists%" == "" (set dobuild=y)
