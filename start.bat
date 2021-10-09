@@ -15,13 +15,13 @@ if "%name%" == "forcebuild" (
 )
 
 if "%name%" == "" (
-    echo "assuming default name: k8stunnel"
+    echo "assuming default name is: k8stunnel"
     set name="k8stunnel"
 )
 
 
 set isexists=
-FOR /F "delims=" %%i IN ('docker images  ^| findstr /i "%name"') DO set "isexists=%%i"
+FOR /F "delims=" %%i IN ('docker images  ^| findstr /i "%name%"') DO set isexists=%%i
 echo "docker image name %isexists% already exists. Will avoide build if not exists"
 
 set dobuild=
