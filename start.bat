@@ -1,5 +1,10 @@
 @ECHO OFF
+
+echo "Unix convert start,..." 
+
 PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& './converter.ps1'"
+
+echo "Unix convert end,..."
 
 set name=%1
 set doforcebuild=%2
