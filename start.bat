@@ -22,12 +22,15 @@ if "%name%" == "" (
 
 set isexists=
 FOR /F "delims=" %%i IN ('docker images  ^| findstr /i "%name%"') DO set isexists=%%i
-echo "docker image name %isexists% already exists. Will avoide build if not exists"
+
+if "%name%" == "%isexists%" (
+    echo "docker image name %isexists% already exists. Will avoide build if not forcebuild..."
+)
 
 set dobuild=
 if "%isexists%" == "" (set dobuild=y)
-set param2=%2
-if NOT "%param2%"=="%param2:forcebuild=%" (set dobuild=y)
+
+if NOT "%doforcebuild%"=="%doforcebuild:forcebuild=%" (set dobuild=y)
 if "%dobuild%" == "y" (docker build . -t %1)
 
 set currdir=%cd%
