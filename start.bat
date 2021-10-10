@@ -29,10 +29,10 @@ if "%name%" == "%isexists%" (
 
 set dobuild=
 if "%isexists%" == "" (set dobuild=y)
+if "%doforcebuild%" == "forcebuild" (set dobuild=y)
 
-if NOT "%doforcebuild%"=="%doforcebuild:forcebuild=%" (set dobuild=y)
-if "%dobuild%" == "y" (docker build . -t %1)
+if "%dobuild%" == "y" (docker build . -t %name%)
 
 set currdir=%cd%
-docker run -it --rm -v %currdir%:/root/ --add-host kubernetes:127.0.0.1 --name %1 %1
+docker run -it --rm -v %currdir%:/root/ --add-host kubernetes:127.0.0.1 --name %name% %name%
 PAUSE
