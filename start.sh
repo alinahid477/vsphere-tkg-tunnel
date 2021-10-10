@@ -5,10 +5,12 @@ then
     name=''
     forcebuild='forcebuild'
 fi
-if [[ -z $name]]
+
+if [[ -z $name ]]
 then
     name='k8stunnel'
 fi
+
 isexists=$(docker images | grep "\<$name\>")
 if [[ -z $isexists || $forcebuild == "forcebuild" ]]
 then
