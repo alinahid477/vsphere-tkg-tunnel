@@ -31,6 +31,42 @@ set dobuild=
 if "%isexists%" == "" (set dobuild=y)
 if "%doforcebuild%" == "forcebuild" (set dobuild=y)
 
+setlocal enableextensions
+
+set count=0
+for %%x in (binaries/*.tar.*) do set /a count+=1
+echo %count%
+if %count% NEQ 1 (
+    echo "Found 0 or more than 1 tar file in the binaries dir. binaries dir must contain eactly 1 tar file..."
+    EXIT /B 0
+)
+
+set dodockercopy="no"
+if exist Dockerfile (
+	isexist="Dockerfile"
+) else (
+	dodockercopy="yes"
+)
+
+
+if "%dodockercopy%" == "yes" (
+	set tanzubundlename=
+	for %%x in (binaries/*.tar.*) do set tanzubundlename=%%x
+	if "%tanzubundlename:~0,3%" == "tce" (
+		echo "ERROR: tce detected..tce tanzu cli is not supported. Please remove the tar file. exit..."
+        EXIT /B 0
+	) ELSE (
+        if "%tanzubundlename:~0,5%" == "tanzu" (
+            echo "tkg detected"
+		    copy Dockerfile.tanzucli Dockerfile
+        ) ELSE (
+            copy Dockerfile.lean Dockerfile
+        )
+	)
+)
+	
+endlocal
+
 if "%dobuild%" == "y" (docker build . -t %name%)
 
 set currdir=%cd%

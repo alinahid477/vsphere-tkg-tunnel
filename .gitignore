@@ -60,3 +60,4 @@ binaries/*
 yamls/*
 tanzu-clusters/*
 !tanzu-clusters/.gitkeep
+Dockerfile
