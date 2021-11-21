@@ -12,7 +12,7 @@ then
 fi
 
 isexist=$(ls Dockerfile)
-if [[ -z $isexist || -n $forcebuild ]]
+if [[ -z $isexist ]]
 then
     numberoftarfound=$(find binaries/*tar* -type f -printf "." | wc -c)
     if [[ $numberoftarfound == 1 ]]

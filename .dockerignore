@@ -3,3 +3,5 @@
 .local
 .docker/config.json
 .vmware-cna-saas
+.cache
+.config
