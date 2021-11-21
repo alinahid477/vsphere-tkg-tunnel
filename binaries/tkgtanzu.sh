@@ -79,7 +79,7 @@ fi
 export $(cat /root/.env | xargs)
 export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
 
-unset login
+unset createcontext
 unset onboardworkloadcluster
 unset clusterendpoint
 unset clustername
@@ -89,30 +89,30 @@ then
     # "${BASH_SOURCE[0]}" != "${0}" script is being sourced
     # This condition is true ONLY when --help is passed in the init script.
     # In this scenario we just want to print the help message and NOT exit.
-    source ~/binaries/readparams-tanzu.sh --printhelp
+    source ~/binaries/readparams-tkgtanzu.sh --printhelp
     return # We do not want to exit. We just dont want to continue the rest.
 fi
 
-result=$(source ~/binaries/readparams-tanzu.sh $@)
+result=$(source ~/binaries/readparams-tkgtanzu.sh $@)
 # source ~/binaries/readparams.sh $@
 
 if [[ $result == *@("Error"|"help")* ]]
 then
     printf "Error: $result\n"
     printf "\nProvide valid params\n"
-    source ~/binaries/readparams-tanzu.sh --printhelp
+    source ~/binaries/readparams-tkgtanzu.sh --printhelp
     exit
 else
     export $(echo $result | xargs)
 fi
 
-if [[ -n $login || -n $onboardworkloadcluster ]]
+if [[ -n $createcontext || -n $onboardworkloadcluster ]]
 then
     isexist=$(tanzu config server list -o json | jq '.[].context' | xargs)
     if [[ -z $isexist || $isexist != $TKG_SUPERVISOR_ENDPOINT ]]
     then
         printf "\nTanzu context not found matching with $TKG_SUPERVISOR_ENDPOINT. Creating new....\n"
-        source ~/binaries/tanzuwizard/tanzu-login.sh
+        source ~/binaries/tanzuwizard/tanzu-create-context.sh
     fi
 fi
 

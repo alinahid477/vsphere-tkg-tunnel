@@ -11,7 +11,7 @@ connectedtanzucontext=$(tanzu config server list -o json | jq '.[].context' | xa
 if [[ -z $connectedtanzucontext || $connectedtanzucontext != $TKG_SUPERVISOR_ENDPOINT ]]
 then
     printf "\nTanzu context not found matching with $TKG_SUPERVISOR_ENDPOINT"
-    printf "\nRUN: ~/binaries/tanzu.sh --create-tanzu-context"
+    printf "\nRUN: ~/binaries/tkgtanzu.sh --create-context"
     printf "\n\n"
     exit 1    
 fi

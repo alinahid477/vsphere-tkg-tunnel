@@ -3,9 +3,9 @@
 helpFunction1()
 {
     printf "\n\n"
-    echo "Usage: ~/baniries/tanzu.sh"
+    echo "Usage: ~/baniries/tkgtanzu.sh"
     echo -e "\t-b | --onboard-workload-cluster no value needed. Signals this script to initiate onboarding a workload cluster. (optionally pass --cluster-endpoint and --cluster-name param)"
-    echo -e "\t-l | --login no value needed. Signals this script to initiate tanzu login for supervisor cluster"
+    echo -e "\t-l | --create-context no value needed. Signals this script to initiate tanzu context for supervisor cluster"
     echo -e "\t-c | --cluster-endpoint the endpoint of the workload cluster to onboard"
     echo -e "\t-n | --cluster-name name of the workload cluster"
     echo -e "\t-h | --help"
@@ -16,7 +16,7 @@ helpFunction1()
 output=""
 
 # read the options
-TEMP=`getopt -o blc:n:hp --long onboard-workload-cluster,login,cluster-endpoint:,cluster-name:,help,printhelp -n $0 -- "$@"`
+TEMP=`getopt -o blc:n:hp --long onboard-workload-cluster,create-context,cluster-endpoint:,cluster-name:,help,printhelp -n $0 -- "$@"`
 eval set -- "$TEMP"
 # echo $TEMP;
 while true ; do
@@ -27,10 +27,10 @@ while true ; do
                 "" ) onboardworkloadcluster='y'; output=$(printf "$output\nonboardworkloadcluster=y") ; shift 2 ;;
                 * ) onboardworkloadcluster='y' ; output=$(printf "$output\nonboardworkloadcluster=y") ; shift 2 ;;
             esac ;;
-        -l | --login )
+        -l | --create-context )
             case "$2" in
-                "" ) login='y'; output=$(printf "$output\nlogin=y") ; shift 2 ;;
-                * ) login='y' ; output=$(printf "$output\nlogin=y") ; shift 2 ;;
+                "" ) createcontext='y'; output=$(printf "$output\ncreatecontext=y") ; shift 2 ;;
+                * ) createcontext='y' ; output=$(printf "$output\ncreatecontext=y") ; shift 2 ;;
             esac ;;
         -c | --cluster-endpoint )
             case "$2" in
@@ -52,25 +52,25 @@ done
 
 iserror=""
 
-if [[ -n $login && -n $onboardworkloadcluster ]]
+if [[ -n $createcontext && -n $onboardworkloadcluster ]]
 then
     iserror="y"
-    printf "\nError: Please specify either onboard-workload-cluster OR login.\n"
+    printf "\nError: Please specify either onboard-workload-cluster OR create-context.\n"
 fi
 
-if [[ -n $login && -n $clusterendpoint && -n $clustername ]]
+if [[ -n $createcontext && -n $clusterendpoint && -n $clustername ]]
 then
     iserror="y"
-    printf "\nError: Please specify either login OR combo of cluster-endpoint and cluster-name with onboard-workload-cluster.\nThese 3 parameters are invalid input.\n"
+    printf "\nError: Please specify either create-context OR combo of cluster-endpoint and cluster-name with onboard-workload-cluster.\nThese 3 parameters are invalid input.\n"
 fi
 
-if [[ -z $login && -n $onboardworkloadcluster && -z $clusterendpoint && -n $clustername ]]
+if [[ -z $createcontext && -n $onboardworkloadcluster && -z $clusterendpoint && -n $clustername ]]
 then
     iserror="y"
     printf "\nError: Please specify both cluster-endpoint and cluster-name.\n"
 fi
 
-if [[ -z $login && -n $onboardworkloadcluster && -z $clustername && -n $clusterendpoint ]]
+if [[ -z $createcontext && -n $onboardworkloadcluster && -z $clustername && -n $clusterendpoint ]]
 then
     iserror="y"
     printf "\nError: Please specify both cluster-endpoint and cluster-name.\n"
