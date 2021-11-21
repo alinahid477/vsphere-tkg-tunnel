@@ -204,7 +204,7 @@ then
     if [[ -n $kappcontrollerpsp ]]
     then
         printf "\n\nusing psp $kappcontrollerpsp to create ClusterRole and ClusterRoleBinding for kapp-controller-sa\n"
-        awk -v old="POD_SECURITY_POLICY_NAME" -v new="$kappcontrollerpsp" 's=index($0,old){$0=substr($0,1,s-1) new substr($0,s+length(old))} 1' ~/binaries/tanzuwizard/kapp-controller-psp.yaml > /tmp/kapp-controller-psp.yaml
+        awk -v old="POD_SECURITY_POLICY_NAME" -v new="$kappcontrollerpsp" 's=index($0,old){$0=substr($0,1,s-1) new substr($0,s+length(old))} 1' ~/binaries/tanzuwizard/kapp-controller-psp.template > /tmp/kapp-controller-psp.yaml
         kubectl apply -f /tmp/kapp-controller-psp.yaml
         printf "Done.\n"
     fi    

@@ -122,4 +122,10 @@ then
     source ~/binaries/tanzuwizard/tanzu-onboard-workloadcluster.sh $clusterendpoint $clustername
 fi
 
+if [[ -n $installpackage ]]
+then
+    printf "\n\nstarting tanzu package installation...\n\n"
+    source ~/binaries/tanzuwizard/tanzu-install-package.sh $installpackage
+fi
+
 

@@ -29,18 +29,18 @@ while true ; do
             esac ;;
         -s | --switch-to-workload )
             case "$2" in
-                "" ) switchtoworkload='y'; output=$(printf "$output\nswitchtoworkload=y") ; shift 2 ;;
-                * ) switchtoworkload='y' ; output=$(printf "$output\nswitchtoworkload=y") ; shift 2 ;;
+                " " ) switchtoworkload='y'; output=$(printf "$output\nswitchtoworkload=y") ; shift 2 ;;
+                * ) switchtoworkload='y' ; output=$(printf "$output\nswitchtoworkload=y") ; shift 1 ;;
             esac ;;
         -c | --cluster-endpoint )
             case "$2" in
                 "" ) clusterendpoint='' ; shift 2 ;;
-                * ) clusterendpoint=$2 ; output=$(printf "$output\nclusterendpoint=$clusterendpoint"); shift 2 ;;
+                * ) clusterendpoint=$2 ; output=$(printf "$output\nclusterendpoint=$2"); shift 2 ;;
             esac ;;
         -n | --cluster-name )
             case "$2" in
                 "" ) clustername=''; shift 2 ;;
-                * ) clustername=$2; output=$(printf "$output\nclustername=$clustername"); shift 2 ;;
+                * ) clustername=$2; output=$(printf "$output\nclustername=$2"); shift 2 ;;
             esac ;;
         -h | --help ) printf "help"; break;; 
         -p | --printhelp ) helpFunction1; break;; 

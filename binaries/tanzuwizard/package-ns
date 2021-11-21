@@ -1,0 +1,6 @@
+cert-manager.tanzu.vmware.com: cert-manager
+contour.tanzu.vmware.com: tanzu-system-ingress
+prometheus.tanzu.vmware.com: tanzu-system-monitoring
+grafana.tanzu.vmware.com: tanzu-system-monitoring
+fluent-bit.tanzu.vmware.com: tanzu-system-logging
+harbor.tanzu.vmware.com: tanzu-system-registry
