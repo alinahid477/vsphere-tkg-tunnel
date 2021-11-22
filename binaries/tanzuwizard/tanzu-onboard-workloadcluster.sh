@@ -216,8 +216,8 @@ then
     kappcontrollerpodstatus=$(echo ${kappcontrollerpodstatus,,} | xargs)
     while [[ $kappcontrollerpodstatus != 'running' && $count -lt 10 ]]; do
         printf "\nkapp-controller pod status (in tkg-system namespace) is: $kappcontrollerpodstatus"
-        printf "\nRetrying (#$count of #10) in 10s to check status...\n"
-        sleep 10
+        printf "\nRetrying (#$count of #10) in 30s to check status...\n"
+        sleep 30
         kappcontrollerpodstatus=$(kubectl get pods -n tkg-system | grep kapp-controller | awk '{print $3}')
         kappcontrollerpodstatus=$(echo ${kappcontrollerpodstatus,,} | xargs) ## turn into lower-case
         ((count=count+1))
@@ -240,6 +240,15 @@ tanzu package repository add tanzupackages --url projects.registry.vmware.com/tk
 sleep 5
 
 printf "\nTanzu repository named 'tanzupackages' ADDED. Checking availabled packages...\n"
-tanzu package available list
+isexist=$(tanzu package available list -A | grep -w cert-manager)
+count=1
+while [[ -z $isexist && $count -lt 10 ]]; do
+    printf "\nnot available yet. waiting 30 before retrying (retry count #$count of #10)..."
+    sleep 30
+    isexist=$(tanzu package available list -A | grep -w cert-manager)
+    ((count=count+1))
+done
+
+tanzu package available list -A
 
 printf "\n\n\nCluster onboard COMPLETE.\n\n\n"

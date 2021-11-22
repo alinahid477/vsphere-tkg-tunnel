@@ -27,7 +27,7 @@ then
     printf "\n\nERROR: packagename $packagename is already installed.\n"
     exit
 fi
-printf "\nPackage in NOT installed. Installing...\n"
+printf "Package in NOT installed. Installing...\n"
 
 printf "\nRetrieving full package name...\n"
 packageid=$(tanzu package available list -A | grep -w $packagename | awk '{print $1}' | xargs)
@@ -37,32 +37,32 @@ then
     listsupportedpackages
     exit
 fi
-printf "\nRetrieved full package name: $packageid\n"
+printf "Retrieved full package name: $packageid\n"
 
 printf "\nRetrieving package namespace...\n"
 packagenamespace=''
-packagenamespace=$(cat ~/binaries/tanzuwizard/package-ns | sed -r 's/[[:alnum:]]+=/\n&/g' | awk -F: '$1=="'$packageid'"{print $2}' | xargs)
+packagenamespace=$(cat ~/binaries/tanzuwizard/package-ns.map | sed -r 's/[[:alnum:]]+=/\n&/g' | awk -F: '$1=="'$packageid'"{print $2}' | xargs)
 if [[ -z $packagenamespace ]]
 then
     printf "\n\nERROR: Not supported by this wizard."
     listsupportedpackages
     exit
 fi
-printf "\nRetrieved package namespace: $packagenamespace...\n"
+printf "Retrieved package namespace: $packagenamespace...\n"
 
 
 printf "\nRetrieving package version...\n"
-packageversion=$(tanzu package available list cert-manager.tanzu.vmware.com -A --output json | jq '.[].version' | xargs)
+packageversion=$(tanzu package available list $packageid -A --output json | jq '.[].version' | xargs)
 if [[ -z $packageversion ]]
 then
     printf "\n\nERROR: Unable to retrieve package version."
     exit
 fi
-printf "\nRetrieved package version: $packageversion...\n"
+printf "Retrieved package version: $packageversion...\n"
 
 printf "\nThis require associating with psp...\n"
 sleep 1
-printf "\nChecking existing POD security policy:\n"
+printf "Checking existing POD security policy:\n"
 unset psp
 isvmwarepsp=$(kubectl get psp | grep -w vmware-system-privileged)
 if [[ -n $isvmwarepsp ]]
@@ -81,7 +81,7 @@ sleep 2
 if [[ -z $SILENTMODE || $SILENTMODE == 'n' ]]
 then
     unset pspprompter
-    printf "\nList of available Pod Security Policies:\n"
+    printf "getting list of available Pod Security Policies....\n"
     kubectl get psp
     if [[ -n $psp ]]
     then
@@ -120,7 +120,7 @@ fi
 
 if [[ -n $psp ]]
 then
-    printf "\n\nusing psp $psp to create ClusterRole and ClusterRoleBinding for $packagenamespace\n"
+    printf "\nusing psp $psp to create ClusterRole and ClusterRoleBinding for $packagenamespace so that pods for package $packagename can get admitted in that namespace...\n"
     rm /tmp/psp-rolebinding-ns.* > /dev/null 2>&1
     cp ~/binaries/tanzuwizard/psp-rolebinding-ns.template /tmp/
     search=SELECTED_PACKAGE_NAME
@@ -132,7 +132,26 @@ then
     printf "Done.\n"
 fi    
 
-printf "\nStarting tanzu package $packagename installtion using tanzu cli...\n"
-tanzu package install $packagename --package-name $packageid --create-namespace --version $packageversion --create-namespace
 
-printf "\n\nPackage installation COMPLETE\n\n"
+packagedatavalues=$(cat ~/binaries/tanzuwizard/data-file.map | sed -r 's/[[:alnum:]]+=/\n&/g' | awk -F: '$1=="'$packageid'"{print $2}' | xargs)
+
+if [[ -n $packagedatavalues ]]
+then
+    printf "\nStarting tanzu package $packagename installtion with $packagedatavalues using tanzu cli...\n"
+    tanzu package install $packagename --package-name $packageid --create-namespace --version $packageversion --create-namespace --values-file ~/binaries/tanzuwizard/$packagedatavalues
+else
+    printf "\nStarting tanzu package $packagename installtion using tanzu cli...\n"
+    tanzu package install $packagename --package-name $packageid --create-namespace --version $packageversion --create-namespace
+fi
+
+printf "\n*******Package installation COMPLETE*******\n\n"
+
+if [[ -z $packagedatavalues ]]
+then
+    printf "\n================================\n"
+    printf "\nYou can modify the data-values of ~/binaries/tanzuwizard/$packagedatavalues for $packagename and run the below command to update...\n"
+    printf "tanzu package installed update $packagename --version $packageversion --values-file ~/binaries/tanzuwizard/$packagedatavalues"
+    printf "\n================================\n"
+fi
+
+printf "\n\n"

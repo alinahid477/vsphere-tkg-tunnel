@@ -1,0 +1,5 @@
+contour.tanzu.vmware.com: contour-data-values.yaml
+prometheus.tanzu.vmware.com: prometheus-data-values.yaml
+grafana.tanzu.vmware.com: grafana-data-values.yaml
+fluent-bit.tanzu.vmware.com: fluent-bit-data-values.yaml
+harbor.tanzu.vmware.com: harbor-data-values.yaml
