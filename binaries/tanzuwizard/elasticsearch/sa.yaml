@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: elastic-sa
+  namespace: tanzu-system-logging
+imagePullSecrets:
+- name: dockerhubregcred
