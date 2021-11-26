@@ -81,7 +81,7 @@ then
     rm ~/.kube/config
 fi
 
-printf "\n\n\n***********Starting tunnel...*************\n"
+printf "\n\n\n***********Starting connection...*************\n"
 
 
 EXISTING_JWT_EXP=$(awk '/users/{flag=1} flag && /'$TKG_VSPHERE_CLUSTER_ENDPOINT'/{flag2=1} flag2 && /token:/ {print $NF;exit}' /root/.kube/config | jq -R 'split(".") | .[1] | @base64d | fromjson | .exp')

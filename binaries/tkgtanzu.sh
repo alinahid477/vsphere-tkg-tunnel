@@ -1,4 +1,20 @@
 #!/bin/bash
+
+isreturn='n'
+
+return_or_exit()
+{
+    isinit=$(echo $0 | grep init.sh)
+    if [[ $isinit ]]
+    then
+        isreturn='y'
+        return
+    else
+        exit
+    fi
+}
+
+
 install_tanzu_plugin()
 {
     tanzubundlename=''
@@ -45,6 +61,9 @@ install_tanzu_plugin()
     fi
 }
 
+
+
+
 isexist=$(tanzu version)
 if [[ -n $isexist ]]
 then
@@ -65,16 +84,17 @@ then
 else
     printf "\n\n\nTanzu CLI does not exist."
     sleep 1
-    printf "\nPlease place the tanzu cli tar file in the binaries directory and perform \"./start.sh/bat forcebuild\" to rebuild with tanzu cli"
+    printf "\nPlease place the tanzu cli tar file in the binaries directory to use tkgtanzu wizard\n\nYou must perform \"./start.sh/bat forcebuild\" to rebuild with tanzu cli\n"
     sleep 1
-    printf "\nExit..."
-    printf "\n\n\n"
-    exit 1
+    return_or_exit
 fi
 
 
 
-
+if [[ $isreturn == 'y' ]]
+then
+    return
+fi
 
 export $(cat /root/.env | xargs)
 export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
@@ -90,7 +110,7 @@ then
     # This condition is true ONLY when --help is passed in the init script.
     # In this scenario we just want to print the help message and NOT exit.
     source ~/binaries/readparams-tkgtanzu.sh --printhelp
-    return # We do not want to exit. We just dont want to continue the rest.
+    return_or_exit # We do not want to exit. We just dont want to continue the rest.
 fi
 
 result=$(source ~/binaries/readparams-tkgtanzu.sh $@)
