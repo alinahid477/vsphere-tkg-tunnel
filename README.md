@@ -1,5 +1,7 @@
 # vSphere with Tanzu Wizard
 
+***This repo is a part of the Merlin initiative (https://github.com/alinahid477/merlin)***
+
 <img src="images/logo.png" alt="Tunnel to vSphere" width=200 height=210/>
 
 *After vSphere with Tanzu is enabled on vCentre cluster,* **Use this wizard to**
