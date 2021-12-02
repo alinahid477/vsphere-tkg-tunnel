@@ -5,11 +5,11 @@
 <img src="images/logo.png" alt="Tunnel to vSphere" width=200 height=210/>
 
 *After vSphere with Tanzu is enabled on vCentre cluster,* **Use this wizard to**
-- Create TKG cluster (both in wizard mode or pipeline mode)
+- Create vsphere with tanzu cluster (both in wizard mode or pipeline mode)
 - Switch back and forth between supervisor and workload cluster with just 1 command.
 - Use this docker image in your pipeline to create cluster
 - Establish tunnel through bastion host (optional, if needed) in private cluster scenario
-
+- onboard workload clusters onto tanzu cli and install tanzu packages (prometheus, grafana etc) using tanzu cli (also takes care of psp issue) on workload clusters
 
 ## Bootstrapped Quick start (recommended)
 
@@ -30,6 +30,11 @@
 
 **Prep Binaries**
 - download `kubectl-vsphere` binaries from your vsphere (Menu>workload management>Namespaces>Select the namespace>Summary>Click link in the `Status` card) and place it in the Binaries directory
+
+
+**(Optional) for installing tanzu packages (eg: cert-manager, prometheus etc)**
+- Download the cli (v1.4) tar file from https://my.vmware.com/en/web/vmware/downloads/info/slug/infrastructure_operations_management/vmware_tanzu_kubernetes_grid/1_x and place it under `binaries` directory. This will enable tanzu cli for deploying common packages such as (prometheus, cert-manager etc) easily (the psp issue is also taken care of in the background).
+
 
 **Build and Run Docker**
 

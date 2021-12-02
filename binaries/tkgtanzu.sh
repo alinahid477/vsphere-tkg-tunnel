@@ -18,7 +18,7 @@ return_or_exit()
 install_tanzu_plugin()
 {
     tanzubundlename=''
-    printf "\nChecking tanzu bundle...\n\n"
+    printf "\nChecking tanzu tar file...\n\n"
     cd /tmp
     sleep 1
     numberoftarfound=$(find ./*tar* -type f -printf "." | wc -c)
@@ -28,7 +28,7 @@ install_tanzu_plugin()
     fi
     if [[ $numberoftarfound -gt 1 ]]
     then
-        printf "\nfound more than 1 bundles..\n"
+        printf "\nfound more than 1 tar files..\n"
         find ./*tar* -printf "%f\n"
         printf "Error: only 1 tar file is allowed in ~/binaries dir.\n"
         printf "\n\n"
@@ -37,10 +37,10 @@ install_tanzu_plugin()
 
     if [[ $numberoftarfound -lt 1 ]]
     then
-        printf "\nNo tanzu bundle found. Please place the tanzu bindle in ~/binaries and rebuild again. Exiting...\n"
+        printf "\nNo tanzu tar file found. Please place the tanzu bindle in ~/binaries and rebuild again to enable tkgtanzu wizard...\n"
         exit 1
     fi
-    printf "\nTanzu Bundle: $tanzubundlename. Installing..."
+    printf "\nTanzu Tar file: $tanzubundlename. Installing..."
     # sleep 1
     # mkdir tanzu
     # tar -xvf $tanzubundlename -C tanzu/
