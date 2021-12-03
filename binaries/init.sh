@@ -45,14 +45,15 @@ source ~/binaries/tkgwizard.sh
 
 printf "\nAvailable wizards are:\n"
 printf "\n****tkgwizard******\n"
-source ~/binaries/tkgwizard.sh --help
+printf "./binaries/tkgwizard.sh --help"
 printf "\n=========================================================\n"
 printf "\n****vsphere with tanzu cluster create wizard******\n"
-source ~/binaries/create-cluster.sh --help
+printf "./binaries/create-cluster.sh --help"
 printf "\n=========================================================\n"
 printf "\n****tanzu package installer wizard******\n"
-source ~/binaries/tkgtanzu.sh --help
-
+printf "./binaries/tkgtanzu.sh --help"
+printf "\n=========================================================\n"
+printf "\n\n"
 cd ~
 
 /bin/bash

@@ -63,6 +63,46 @@ install_tanzu_plugin()
 
 
 
+export $(cat /root/.env | xargs)
+export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
+
+unset createcontext
+unset onboardworkloadcluster
+unset clusterendpoint
+unset clustername
+
+if [[ $@ == "--help"  && "${BASH_SOURCE[0]}" != "${0}" ]]
+then
+    # "${BASH_SOURCE[0]}" != "${0}" script is being sourced
+    # This condition is true ONLY when --help is passed in the init script.
+    # In this scenario we just want to print the help message and NOT exit.
+    source ~/binaries/readparams-tkgtanzu.sh --printhelp
+    return_or_exit # We do not want to exit. We just dont want to continue the rest.
+fi
+
+if [[ $isreturn == 'y' ]]
+then
+    return
+fi
+
+result=$(source ~/binaries/readparams-tkgtanzu.sh $@)
+# source ~/binaries/readparams.sh $@
+
+if [[ $result == *@("Error"|"help")* ]]
+then
+    printf "Error: $result\n"
+    printf "\nProvide valid params\n"
+    source ~/binaries/readparams-tkgtanzu.sh --printhelp
+    return_or_exit
+else
+    export $(echo $result | xargs)
+fi
+
+if [[ $isreturn == 'y' ]]
+then
+    return
+fi
+
 
 isexist=$(tanzu version)
 if [[ -n $isexist ]]
@@ -89,42 +129,11 @@ else
     return_or_exit
 fi
 
-
-
 if [[ $isreturn == 'y' ]]
 then
     return
 fi
 
-export $(cat /root/.env | xargs)
-export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
-
-unset createcontext
-unset onboardworkloadcluster
-unset clusterendpoint
-unset clustername
-
-if [[ $@ == "--help"  && "${BASH_SOURCE[0]}" != "${0}" ]]
-then
-    # "${BASH_SOURCE[0]}" != "${0}" script is being sourced
-    # This condition is true ONLY when --help is passed in the init script.
-    # In this scenario we just want to print the help message and NOT exit.
-    source ~/binaries/readparams-tkgtanzu.sh --printhelp
-    return_or_exit # We do not want to exit. We just dont want to continue the rest.
-fi
-
-result=$(source ~/binaries/readparams-tkgtanzu.sh $@)
-# source ~/binaries/readparams.sh $@
-
-if [[ $result == *@("Error"|"help")* ]]
-then
-    printf "Error: $result\n"
-    printf "\nProvide valid params\n"
-    source ~/binaries/readparams-tkgtanzu.sh --printhelp
-    exit
-else
-    export $(echo $result | xargs)
-fi
 
 if [[ -n $createcontext || -n $onboardworkloadcluster ]]
 then

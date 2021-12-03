@@ -66,6 +66,26 @@ then
         printf "\n\nexit..\n\n"
         exit
     fi
+
+    ## volume config is optional, so either all has value OR all are empty.
+    ## volume config is either all has value === meaning user is giving volume config
+    ## OR all volume config are empty === meaning user is not inputing volume config
+
+    ## First check if any of them has value
+    if [[ -n $defaultvalue_volume_mount_name || -n $defaultvalue_volume_mount_path || -n $defaultvalue_volume_mount_size ]]
+    then
+        ## Then check if any of them is empty
+        if [[ -z $defaultvalue_volume_mount_name || -z $defaultvalue_volume_mount_path || -z $defaultvalue_volume_mount_size ]]
+        then
+            # at least one has value BUT at least one is empty as well (it has to be all or nothing)
+
+            printf "\n\nOne or more required value for volume config missing. Validation failed.\nconsider running in wizard mode using -w flag\n"
+            source ~/binaries/readparams-createtkgscluster.sh --printhelp
+            printf "\n\nexit..\n\n"
+            exit
+        fi    
+    fi
+    
 fi
 
 
@@ -109,6 +129,7 @@ then
         then
             printf "\nThis is a required field. You must provide a value.\n"
         else
+            printf "checking...\n"
             isexist=$(kubectl get ns | grep -w $inp)
             if [[ -z $isexist ]]
             then
@@ -127,6 +148,8 @@ unset KUBERNETES_VERSION
 if [[ -z $defaultvalue_kubernetes_version ]]
 then
     latestversion=$(kubectl get tkr --sort-by=.metadata.name -o jsonpath='{.items[-1:].metadata.name}' | grep -Po '(?<=v)[^-]+' | awk 'NR==1{print $1}')
+    printf "\n\n Getting tanzu kubernetes releases that are  compatible"
+    kubectl get tkr
     printf "\n\nWhich kubernetes version would you like to use for this k8s cluster?"
     printf "\nHint:"
     echo -e "\tMust be an existing version from kubectl get tkr"
@@ -363,7 +386,8 @@ unset VOLUME_MOUNT_NAME
 unset VOLUME_MOUNT_PATH
 unset VOLUME_MOUNT_SIZE
 unset IS_PRESENT_VOLUME_MOUNT
-if [[ -z $defaultvalue_volume_mount_name && -z $defaultvalue_volume_mount_path && -z $defaultvalue_volume_mount_path ]] 
+unset VOLUME_CONFIG
+if [[ -z $defaultvalue_volume_mount_name || -z $defaultvalue_volume_mount_path || -z $defaultvalue_volume_mount_size ]] 
 then
     while true; do
         read -p "Confirm if you would like to configure volume mount? [y/n] " yn
@@ -415,7 +439,7 @@ then
         VOLUME_MOUNT_PATH=$defaultvalue_volume_mount_path
     fi
 
-    if [[ -z $defaultvalue_volume_mount_path ]]
+    if [[ -z $defaultvalue_volume_mount_size ]]
     then
         
         while true; do
@@ -431,6 +455,10 @@ then
     else
         VOLUME_MOUNT_SIZE=$defaultvalue_volume_mount_size
     fi
+
+    VOLUME_CONFIG=$(sed 's/VOLUME_MOUNT_NAME/'$VOLUME_MOUNT_NAME'/g' /usr/local/tanzu-cluster.volumeconfig.template)
+    VOLUME_CONFIG=$(printf "$VOLUME_CONFIG" | sed 's#VOLUME_MOUNT_PATH#'$VOLUME_MOUNT_PATH'#g')
+    VOLUME_CONFIG=$(printf "$VOLUME_CONFIG" | sed 's#VOLUME_MOUNT_SIZE#'$VOLUME_MOUNT_SIZE'Gi#g')
 fi
 
 if [[ -z $DEFAULT_TKG_API ]]
@@ -439,24 +467,22 @@ then
 fi
 
 printf "\nCreating definition file /tmp/$CLUSTER_NAME.yaml\n"
-cp /usr/local/tanzu-cluster.$DEFAULT_TKG_API.template /tmp/$CLUSTER_NAME.yaml
+cp /usr/local/tanzu-cluster.$DEFAULT_TKG_API.template /tmp/$CLUSTER_NAME.tmp
 sleep 1
 
-sed -i 's/CLUSTER_NAME/'$CLUSTER_NAME'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/VSPHERE_NAMESPACE/'$VSPHERE_NAMESPACE'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/KUBERNETES_VERSION/'$KUBERNETES_VERSION'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/CONTROL_PLANE_COUNT/'$CONTROL_PLANE_COUNT'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/CONTROL_PLANE_VM_CLASS/'$CONTROL_PLANE_VM_CLASS'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/CONTROL_PLANE_STORAGE_CLASS/'$CONTROL_PLANE_STORAGE'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/WORKER_NODE_COUNT/'$WORKER_NODE_COUNT'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/WORKER_NODE_VM_CLASS/'$WORKER_NODE_VM_CLASS'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's/WORKER_NODE_STORAGE_CLASS/'$WORKER_NODE_STORAGE'/g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's#POD_CIDR_BLOCKS#'$POD_CIDR_BLOCKS'#g' /tmp/$CLUSTER_NAME.yaml
-sed -i 's#SERVICES_CIDR_BLOCKS#'$SERVICES_CIDR_BLOCKS'#g' /tmp/$CLUSTER_NAME.yaml
+sed -i 's/CLUSTER_NAME/'$CLUSTER_NAME'/g' /tmp/$CLUSTER_NAME.tmp
+sed -i 's/VSPHERE_NAMESPACE/'$VSPHERE_NAMESPACE'/g' /tmp/$CLUSTER_NAME.tmp
+sed -i 's/KUBERNETES_VERSION/'$KUBERNETES_VERSION'/g' /tmp/$CLUSTER_NAME.tmp
+sed -i 's/CONTROL_PLANE_COUNT/'$CONTROL_PLANE_COUNT'/g' /tmp/$CLUSTER_NAME.tmp
+sed -i 's/CONTROL_PLANE_VM_CLASS/'$CONTROL_PLANE_VM_CLASS'/g' /tmp/$CLUSTER_NAME.tmp
+sed -i 's/CONTROL_PLANE_STORAGE_CLASS/'$CONTROL_PLANE_STORAGE'/g' /tmp/$CLUSTER_NAME.tmp
+sed -i 's/WORKER_NODE_COUNT/'$WORKER_NODE_COUNT'/g' /tmp/$CLUSTER_NAME.tmp
+sed -i 's/WORKER_NODE_VM_CLASS/'$WORKER_NODE_VM_CLASS'/g' /tmp/$CLUSTER_NAME.tmp
+sed -i 's/WORKER_NODE_STORAGE_CLASS/'$WORKER_NODE_STORAGE'/g' /tmp/$CLUSTER_NAME.tmp
+sed -i 's#POD_CIDR_BLOCKS#'$POD_CIDR_BLOCKS'#g' /tmp/$CLUSTER_NAME.tmp
+sed -i 's#SERVICES_CIDR_BLOCKS#'$SERVICES_CIDR_BLOCKS'#g' /tmp/$CLUSTER_NAME.tmp
 
-# TODO volume mount stuff
-
-# awk -v old="WORKER_VOLUME_BLOCK" -v new="$WORKER_VOLUME_BLOCK" 's=index($0,old){$0=substr($0,1,s-1) new substr($0,s+length(old))} 1' tanzu-cluster.v1alpha2.template > tanzu-cluster.v1alpha2.yaml
+awk -v old="WORKER_VOLUME_BLOCK" -v new="$VOLUME_CONFIG" 's=index($0,old){$0=substr($0,1,s-1) new substr($0,s+length(old))} 1' /tmp/$CLUSTER_NAME.tmp > /tmp/$CLUSTER_NAME.yaml
 
 if [[ -d "/root/tanzu-clusters" ]]
 then
