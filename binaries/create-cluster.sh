@@ -69,6 +69,8 @@ then
 fi
 
 
+
+
 printf "\n\n\n**********Starting TKGs Wizard...**************\n"
 unset CLUSTER_NAME
 if [[ -z $defaultvalue_name ]]
@@ -327,7 +329,6 @@ fi
 process_cidr_blocks $SERVICES_CIDR_BLOCKS
 SERVICES_CIDR_BLOCKS=$CIDR_BLOCKS
 
-
 unset POD_CIDR_BLOCKS
 if [[ -z $defaultvalue_pod_cidr_blocks ]]
 then
@@ -354,8 +355,91 @@ fi
 process_cidr_blocks $POD_CIDR_BLOCKS
 POD_CIDR_BLOCKS=$CIDR_BLOCKS
 
+
+
+
+
+unset VOLUME_MOUNT_NAME
+unset VOLUME_MOUNT_PATH
+unset VOLUME_MOUNT_SIZE
+unset IS_PRESENT_VOLUME_MOUNT
+if [[ -z $defaultvalue_volume_mount_name && -z $defaultvalue_volume_mount_path && -z $defaultvalue_volume_mount_path ]] 
+then
+    while true; do
+        read -p "Confirm if you would like to configure volume mount? [y/n] " yn
+        case $yn in
+            [Yy]* ) IS_PRESENT_VOLUME_MOUNT='y'; printf "\nyou confirmed yes\n"; break;;
+            [Nn]* ) IS_PRESENT_VOLUME_MOUNT='n'; printf "\n\nYou said no.\n"; break;;
+            * ) echo "Please answer yes or no.";
+        esac
+    done
+else
+    IS_PRESENT_VOLUME_MOUNT='y'
+fi
+
+if [[ $IS_PRESENT_VOLUME_MOUNT == 'y' ]]
+then
+    printf "\n\nNOTE: Volume mount configuration is for each worker node.\n\n"
+    
+    if [[ -z $defaultvalue_volume_mount_name ]]
+    then
+        
+        while true; do
+            read -p "volume mount name: " inp
+            if [[ -z $inp ]]
+            then
+                printf "You must provide a valid value"
+            else
+                VOLUME_MOUNT_NAME=$inp
+                break
+            fi
+        done
+    else
+        VOLUME_MOUNT_NAME=$defaultvalue_volume_mount_name
+    fi
+
+    if [[ -z $defaultvalue_volume_mount_path ]]
+    then
+        
+        while true; do
+            read -p "volume mount path (eg:/var/lib/vol1): " inp
+            if [[ -z $inp ]]
+            then
+                printf "You must provide a valid value"
+            else
+                VOLUME_MOUNT_PATH=$inp
+                break
+            fi
+        done
+    else
+        VOLUME_MOUNT_PATH=$defaultvalue_volume_mount_path
+    fi
+
+    if [[ -z $defaultvalue_volume_mount_path ]]
+    then
+        
+        while true; do
+            read -p "volume mount size (in gb): " inp
+            if [[ -z $inp || ! $inp =~ ^[1-9]+$ ]]
+            then
+                printf "You must provide a valid value"
+            else
+                VOLUME_MOUNT_SIZE=$inp
+                break
+            fi
+        done
+    else
+        VOLUME_MOUNT_SIZE=$defaultvalue_volume_mount_size
+    fi
+fi
+
+if [[ -z $DEFAULT_TKG_API ]]
+then
+    DEFAULT_TKG_API=v1alpha2
+fi
+
 printf "\nCreating definition file /tmp/$CLUSTER_NAME.yaml\n"
-cp /usr/local/tanzu-cluster.template /tmp/$CLUSTER_NAME.yaml
+cp /usr/local/tanzu-cluster.$DEFAULT_TKG_API.template /tmp/$CLUSTER_NAME.yaml
 sleep 1
 
 sed -i 's/CLUSTER_NAME/'$CLUSTER_NAME'/g' /tmp/$CLUSTER_NAME.yaml
@@ -369,6 +453,10 @@ sed -i 's/WORKER_NODE_VM_CLASS/'$WORKER_NODE_VM_CLASS'/g' /tmp/$CLUSTER_NAME.yam
 sed -i 's/WORKER_NODE_STORAGE_CLASS/'$WORKER_NODE_STORAGE'/g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's#POD_CIDR_BLOCKS#'$POD_CIDR_BLOCKS'#g' /tmp/$CLUSTER_NAME.yaml
 sed -i 's#SERVICES_CIDR_BLOCKS#'$SERVICES_CIDR_BLOCKS'#g' /tmp/$CLUSTER_NAME.yaml
+
+# TODO volume mount stuff
+
+# awk -v old="WORKER_VOLUME_BLOCK" -v new="$WORKER_VOLUME_BLOCK" 's=index($0,old){$0=substr($0,1,s-1) new substr($0,s+length(old))} 1' tanzu-cluster.v1alpha2.template > tanzu-cluster.v1alpha2.yaml
 
 if [[ -d "/root/tanzu-clusters" ]]
 then

@@ -1,0 +1,31 @@
+apiVersion: run.tanzu.vmware.com/v1alpha2
+kind: TanzuKubernetesCluster
+metadata:
+  name: CLUSTER_NAME
+  namespace: VSPHERE_NAMESPACE
+spec:
+  topology:
+    controlPlane:
+      replicas: CONTROL_PLANE_COUNT
+      vmClass: CONTROL_PLANE_VM_CLASS
+      storageClass: CONTROL_PLANE_STORAGE_CLASS
+      tkr:  
+        reference:
+          name: KUBERNETES_VERSION
+    nodePools:
+    - name: workers
+      replicas: WORKER_NODE_COUNT
+      vmClass: WORKER_NODE_VM_CLASS
+      storageClass: WORKER_NODE_STORAGE_CLASS
+      WORKER_VOLUME_BLOCK
+      tkr:  
+        reference:
+          name: KUBERNETES_VERSION
+  settings:
+    storage:
+      defaultClass: WORKER_NODE_STORAGE_CLASS
+    network:
+      services:
+        cidrBlocks: [POD_CIDR_BLOCKS]
+      pods:
+        cidrBlocks: [SERVICES_CIDR_BLOCKS]

@@ -24,8 +24,14 @@ RUN apt-get update && apt-get install -y \
 RUN curl -o /usr/local/bin/jq -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && \
   	chmod +x /usr/local/bin/jq
 
-COPY binaries/tanzu-cluster.template /usr/local/ 
-RUN chmod +x /usr/local/tanzu-cluster.template
+COPY binaries/tanzu-cluster.v1alpha1.template /usr/local/ 
+RUN chmod +x /usr/local/tanzu-cluster.v1alpha1.template
+
+COPY binaries/tanzu-cluster.v1alpha2.template /usr/local/ 
+RUN chmod +x /usr/local/tanzu-cluster.v1alpha2.template
+
+COPY binaries/tanzu-cluster.volumeconfig.template /usr/local/ 
+RUN chmod +x /usr/local/tanzu-cluster.volumeconfig.template
 
 # COPY binaries/kubectl-vsphere /usr/local/bin/ 
 # RUN chmod +x /usr/local/bin/kubectl-vsphere

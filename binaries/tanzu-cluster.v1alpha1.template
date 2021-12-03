@@ -15,6 +15,7 @@ spec:
       count: WORKER_NODE_COUNT
       class: WORKER_NODE_VM_CLASS
       storageClass: WORKER_NODE_STORAGE_CLASS
+      WORKER_VOLUME_BLOCK
   settings:
     network: 
       pods:

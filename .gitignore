@@ -55,7 +55,9 @@ binaries/*
 !binaries/readparams.sh
 !binaries/readparams-createtkgscluster.sh
 !binaries/create-cluster.sh
-!binaries/tanzu-cluster.template
+!binaries/tanzu-cluster.v1alpha1.template
+!binaries/tanzu-cluster.v1alpha2.template
+!binaries/tanzu-cluster.volumeconfig.template
 !binaries/tkgtanzu.sh
 !binaries/readparams-tkgtanzu.sh
 !binaries/tanzuwizard

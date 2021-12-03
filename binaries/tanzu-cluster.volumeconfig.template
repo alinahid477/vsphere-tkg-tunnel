@@ -1,0 +1,5 @@
+volumes:
+        - name: VOLUME_MOUNT_NAME
+          mountPath: VOLUME_MOUNT_PATH
+          capacity:
+            storage: VOLUME_MOUNT_SIZE
