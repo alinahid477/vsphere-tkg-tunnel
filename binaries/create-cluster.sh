@@ -147,7 +147,13 @@ fi
 unset KUBERNETES_VERSION
 if [[ -z $defaultvalue_kubernetes_version ]]
 then
-    latestversion=$(kubectl get tkr --sort-by=.metadata.name -o jsonpath='{.items[-1:].metadata.name}' | grep -Po '(?<=v)[^-]+' | awk 'NR==1{print $1}')
+    # for v1alpha2 (which is also the default in case it is missinh in the .env) we want the full tkr reference (eg: v1.21.2---vmware.1-tkg.1.ee25d55)
+    latestversion=$(kubectl get tkr --sort-by=.metadata.name -o jsonpath='{.items[-1:].metadata.name}' | awk 'NR==1{print $1}')
+    if [[ $DEFAULT_TKG_API == 'v1alpha1' ]]
+    then
+        # for v1alpha1 we want sort reference (eg: 1.21.2)
+        latestversion=$(kubectl get tkr --sort-by=.metadata.name -o jsonpath='{.items[-1:].metadata.name}' | grep -Po '(?<=v)[^-]+' | awk 'NR==1{print $1}')
+    fi
     printf "\n\n Getting tanzu kubernetes releases that are  compatible"
     kubectl get tkr
     printf "\n\nWhich kubernetes version would you like to use for this k8s cluster?"
