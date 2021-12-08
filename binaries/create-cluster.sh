@@ -413,7 +413,7 @@ then
     
     if [[ -z $defaultvalue_volume_mount_name ]]
     then
-        printf "\n\nWhat is the name of the volume mount.."
+        printf "\n\nWhat is the name of the volume mount..\n"
         echo -e "\tDEFAULT: containerd (hit enter to accept)"
         printf "\n"
         while true; do
@@ -433,7 +433,7 @@ then
 
     if [[ -z $defaultvalue_volume_mount_path ]]
     then
-        printf "\n\nWhat is the volume mount path.."
+        printf "\n\nWhat is the volume mount path..\n"
         echo -e "\tDEFAULT: /var/lib/containerd (hit enter to accept)"
         printf "\n"
         while true; do
