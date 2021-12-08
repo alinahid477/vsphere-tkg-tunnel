@@ -15,8 +15,8 @@ if "%name%" == "forcebuild" (
 )
 
 if "%name%" == "" (
-    echo "assuming default name is: k8stunnel"
-    set name="k8stunnel"
+    echo "assuming default name is: merlinvspherewithtanzu"
+    set name="merlinvspherewithtanzu"
 )
 
 

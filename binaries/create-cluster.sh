@@ -444,7 +444,7 @@ then
         
         while true; do
             read -p "volume mount size (in gb): " inp
-            if [[ -z $inp || ! $inp =~ ^[1-9]+$ ]]
+            if [[ -z $inp || ! $inp =~ ^[0-9]+$ || $inp != '0']]
             then
                 printf "You must provide a valid value"
             else

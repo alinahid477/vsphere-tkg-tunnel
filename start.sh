@@ -8,7 +8,8 @@ fi
 
 if [[ -z $name ]]
 then
-    name='k8stunnel'
+    printf "\nassuming default name is: merlinvspherewithtanzu\n"
+    name='merlinvspherewithtanzu'
 fi
 
 isexist=$(ls Dockerfile)
