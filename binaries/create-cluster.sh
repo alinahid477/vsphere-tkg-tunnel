@@ -407,12 +407,15 @@ then
     
     if [[ -z $defaultvalue_volume_mount_name ]]
     then
-        
+        printf "\n\nWhat is the name of the volume mount.."
+        echo -e "\tDEFAULT: containerd (hit enter to accept)"
+        printf "\n"
         while true; do
             read -p "volume mount name: " inp
             if [[ -z $inp ]]
             then
-                printf "You must provide a valid value"
+                VOLUME_MOUNT_NAME='containerd'
+                break
             else
                 VOLUME_MOUNT_NAME=$inp
                 break
@@ -424,12 +427,15 @@ then
 
     if [[ -z $defaultvalue_volume_mount_path ]]
     then
-        
+        printf "\n\nWhat is the volume mount path.."
+        echo -e "\tDEFAULT: /var/lib/containerd (hit enter to accept)"
+        printf "\n"
         while true; do
-            read -p "volume mount path (eg:/var/lib/vol1): " inp
+            read -p "volume mount path: " inp
             if [[ -z $inp ]]
             then
-                printf "You must provide a valid value"
+                VOLUME_MOUNT_PATH='/var/lib/containerd'
+                break
             else
                 VOLUME_MOUNT_PATH=$inp
                 break
@@ -446,7 +452,7 @@ then
             read -p "volume mount size (in gb): " inp
             if [[ -z $inp || ! $inp =~ ^[0-9]+$ || $inp != '0']]
             then
-                printf "You must provide a valid value"
+                printf "You must provide a valid value\n"
             else
                 VOLUME_MOUNT_SIZE=$inp
                 break
