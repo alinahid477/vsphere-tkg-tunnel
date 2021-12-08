@@ -194,7 +194,7 @@ then
     printf "\n\nHow many control plane would you like in this cluster.."
     printf "\nHint:"
     echo -e "\tYou must provide a number 1 or 3"
-    echo -e "\tDEFAULT: 1"
+    echo -e "\tDEFAULT: 1 (hit enter to accept)"
     while true; do
         read -p "Control Plane Count: " inp
         if [[ -z $inp ]]
@@ -221,7 +221,7 @@ then
     printf "\n\nWhat type of vm type would you like in this cluster.."
     printf "\nHint:"
     echo -e "\tYou must provide a valid value from here: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-7351EEFF-4EF0-468F-A19B-6CEA40983D3D.html"
-    [[ -n $DEFAULT_CONTROL_PLANE_VM_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_CONTROL_PLANE_VM_CLASS"
+    [[ -n $DEFAULT_CONTROL_PLANE_VM_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_CONTROL_PLANE_VM_CLASS (hit enter to accept)"
     while true; do
         read -p "Control Plane VM Type: " inp
         if [[ -z $inp && -n $DEFAULT_CONTROL_PLANE_VM_CLASS ]]
@@ -244,7 +244,7 @@ then
     printf "\n\nWhat is the name of storage policy would you like to attach to this control plane.."
     printf "\nHint:"
     echo -e "\tYou must provide a valid value"
-    [[ -n $DEFAULT_STORAGE_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_STORAGE_CLASS"
+    [[ -n $DEFAULT_STORAGE_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_STORAGE_CLASS (hit enter to accept)"
     while true; do
         read -p "Control Plane Storage Policy: " inp
         if [[ -z $inp && -n $DEFAULT_STORAGE_CLASS ]]
@@ -267,7 +267,7 @@ then
     printf "\n\nHow many worker node would you like in this cluster.."
     printf "\nHint:"
     echo -e "\tYou must provide a number ranging between 1-100"
-    echo -e "\tDEFAULT: 1"
+    echo -e "\tDEFAULT: 1 (hit enter to accept)"
     while true; do
         read -p "Worker Node Count: " inp
         if [[ -z $inp ]]
@@ -294,7 +294,7 @@ then
     printf "\n\nWhat type of vm type would you like in this cluster.."
     printf "\nHint:"
     echo -e "\tYou must provide a valid value from here: https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-7351EEFF-4EF0-468F-A19B-6CEA40983D3D.html"
-    [[ -n $DEFAULT_WORKER_NODE_VM_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_WORKER_NODE_VM_CLASS"
+    [[ -n $DEFAULT_WORKER_NODE_VM_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_WORKER_NODE_VM_CLASS (hit enter to accept)"
     while true; do
         read -p "Worker Node VM Type: " inp
         if [[ -z $inp && -n $DEFAULT_WORKER_NODE_VM_CLASS ]]
@@ -316,7 +316,7 @@ then
     printf "\n\nWhat is the name of storage policy would you like to attach to the worker.."
     printf "\nHint:"
     echo -e "\tYou must provide a valid value"
-    [[ -n $DEFAULT_STORAGE_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_STORAGE_CLASS"
+    [[ -n $DEFAULT_STORAGE_CLASS ]] && echo -e "\tDEFAULT: $DEFAULT_STORAGE_CLASS (hit enter to accept)"
     while true; do
         read -p "Worker Storage Policy: " inp
         if [[ -z $inp && -n $DEFAULT_STORAGE_CLASS ]]
@@ -339,7 +339,7 @@ then
     printf "\nHint:"
     echo -e "\tcomma separated string values in cids format"
     echo -e "\tYou must provide a valid value"
-    [[ -n $DEFAULT_SERVICES_CIDR_BLOCKS ]] && echo -e "\tDEFAULT: $DEFAULT_SERVICES_CIDR_BLOCKS"
+    [[ -n $DEFAULT_SERVICES_CIDR_BLOCKS ]] && echo -e "\tDEFAULT: $DEFAULT_SERVICES_CIDR_BLOCKS (hit enter to accept)"
     while true; do
         read -p "services cidr blocks: " inp
         if [[ -z $inp && -n $DEFAULT_SERVICES_CIDR_BLOCKS ]]
@@ -365,7 +365,7 @@ then
     printf "\nHint:"
     echo -e "\tcomma separated string values in cids format"
     echo -e "\tYou must provide a valid value"
-    [[ -n $DEFAULT_POD_CIDR_BLOCKS ]] && echo -e "\tDEFAULT: $DEFAULT_POD_CIDR_BLOCKS"
+    [[ -n $DEFAULT_POD_CIDR_BLOCKS ]] && echo -e "\tDEFAULT: $DEFAULT_POD_CIDR_BLOCKS (hit enter to accept)"
     while true; do
         read -p "pod cidr blocks: " inp
         if [[ -z $inp && -n $DEFAULT_POD_CIDR_BLOCKS ]]
@@ -455,8 +455,8 @@ then
     then
         
         while true; do
-            read -p "volume mount size (in gb): " inp
-            if [[ -z $inp || ! $inp =~ ^[0-9]+$ || $inp != '0']]
+            read -p "volume mount size in gb (eg: 20): " inp
+            if [[ -z $inp || ! $inp =~ ^[0-9]+$ || $inp != '0' ]]
             then
                 printf "You must provide a valid value\n"
             else
