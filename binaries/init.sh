@@ -45,16 +45,12 @@ then
 fi
 
 source ~/binaries/tkgwizard.sh
+dotkgwizard 'n' 'n' 'n' 'n' 'y'
 
-printf "\nAvailable wizards are:\n"
-printf "\n****tkgwizard******\n"
-printf "./binaries/tkgwizard.sh --help"
+printf "\n\n"
 printf "\n=========================================================\n"
-printf "\n****vsphere with tanzu cluster create wizard******\n"
-printf "./binaries/create-cluster.sh --help"
-printf "\n=========================================================\n"
-printf "\n****tanzu package installer wizard******\n"
-printf "./binaries/tkgtanzu.sh --help"
+printf "\nSee options:\n"
+printf "merlin --help"
 printf "\n=========================================================\n"
 printf "\n\n"
 cd ~

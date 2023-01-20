@@ -9,7 +9,8 @@ function dotkgwizard() {
     local switchtoworkload=$2
     local clusterendpoint=$3
     local clustername=$4
-    
+    local getfromenvironmentvariables=$5
+
     local isexists=''
     local isok='n'
 
@@ -25,6 +26,10 @@ function dotkgwizard() {
         export TKG_VSPHERE_CLUSTER_NAME=$(echo $clustername | xargs) 
         isok='y'
         printf "\n\n--- Switching to worker $clustername-->$clusterendpoint ---\n\n"
+    elif [[ $getfromenvironmentvariables == 'y' ]]
+    then
+        isok='y'
+        printf "\n\n--- Login based on env variables ---\n\n"
     fi
 
 
