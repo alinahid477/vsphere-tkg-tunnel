@@ -39,10 +39,10 @@ source $HOME/binaries/tkgwizard.sh
 source $HOME/binaries/tkgtanzu.sh
 source $HOME/binaries/tkgcreatecluster.sh
 
-helpFunction()
+function helpFunction()
 {
     printf "\n\n"
-    echo "Usage: ~/merlin"
+    echo "Usage: merlin"
     echo -e "\t-s | --switch-to-supervisor no value needed. Signals this script to initiate login into TKG supervisor cluster"
     echo -e "\t-t | --switch-to-workload no value needed. Signals this script to initiate login into TKG workload cluster"
     echo -e "\t-e | --cluster-endpoint the endpoint of the workload cluster"
@@ -166,7 +166,7 @@ TEMP+=' --long'
 
 TEMP+=' switch-to-supervisor,switch-to-workload,cluster-endpoint:,cluster-name:,'
 
-TEMP+=' create-context,onboard-workload-cluster,install-package:,'
+TEMP+='create-context,onboard-workload-cluster,install-package:,'
 
 TEMP+='wizard,name:,vsphere-namespace:,control-plane-count:,control-plane-vm-class:,control-plane-storage:,'
 TEMP+='worker-node-count:,worker-node-vm-class:,worker-node-storage:,'
@@ -174,9 +174,9 @@ TEMP+='services-cidr-blocks:,pod-cidr-blocks:,'
 TEMP+='volume-mount-size:,volume-mount-path:,volume-mount-name:,'
 TEMP+='kubernetes-version:,'
 
-TEMP+='help -n'
+TEMP+='help'
 
-TEMP=`$TEMP $0 -- "$@"`
+TEMP=`$TEMP -n $0 -- "$@"`
 eval set -- "$TEMP"
 # echo $TEMP;
 while true ; do
@@ -201,9 +201,7 @@ while true ; do
             case "$2" in
                 "" ) clustername=''; shift 2 ;;
                 * ) clustername=$2; shift 2 ;;
-            esac ;;
-
-        
+            esac ;;        
         -b | --onboard-workload-cluster )
             case "$2" in
                 "" ) onboardworkloadcluster='y'; shift 2 ;;
@@ -219,9 +217,6 @@ while true ; do
                 "" ) installpackage='Error' ; shift 2 ;;
                 * ) installpackage=$2 ; shift 2 ;;
             esac ;;
-
-
-
         -w | --wizard )
             case "$2" in
                 "" ) createclusterwizard='y' ; shift 2 ;;
@@ -297,9 +292,7 @@ while true ; do
                 "" ) createclusterparam='y'; defaultvalue_volume_mount_name="" ; shift 2 ;;
                 * ) createclusterparam='y'; defaultvalue_volume_mount_name=$2 ; shift 2 ;;
             esac ;;
-
-
-        -h | --help ) ishelp='y'; helpFunction; break;;  
+        -h | --help ) ishelp='y'; helpFunction; break;; 
         -- ) shift; break;; 
         * ) break;;
     esac
