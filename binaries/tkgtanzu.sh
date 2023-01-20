@@ -61,100 +61,117 @@ install_tanzu_plugin()
     fi
 }
 
+# unset createcontext
+# unset onboardworkloadcluster
+# unset installpackage
+# unset clusterendpoint
+# unset clustername
+
+# if [[ $@ == "--help"  && "${BASH_SOURCE[0]}" != "${0}" ]]
+# then
+#     # "${BASH_SOURCE[0]}" != "${0}" script is being sourced
+#     # This condition is true ONLY when --help is passed in the init script.
+#     # In this scenario we just want to print the help message and NOT exit.
+#     source ~/binaries/readparams-tkgtanzu.sh --printhelp
+#     return_or_exit # We do not want to exit. We just dont want to continue the rest.
+# fi
+
+# if [[ $isreturn == 'y' ]]
+# then
+#     return
+# fi
+
+# result=$(source ~/binaries/readparams-tkgtanzu.sh $@)
+# # source ~/binaries/readparams.sh $@
+
+# if [[ $result == *@("Error"|"help")* ]]
+# then
+#     printf "Error: $result\n"
+#     printf "\nProvide valid params\n"
+#     source ~/binaries/readparams-tkgtanzu.sh --printhelp
+#     return_or_exit
+# else
+#     export $(echo $result | xargs)
+# fi
+
+# if [[ $isreturn == 'y' ]]
+# then
+#     return
+# fi
 
 
-export $(cat /root/.env | xargs)
-export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
+function dotkgtanzu() {
 
-unset createcontext
-unset onboardworkloadcluster
-unset clusterendpoint
-unset clustername
+    local createcontext=$1
+    local onboardworkloadcluster=$2
+    local clusterendpoint=$3
+    local clustername=$4
+    local installpackage=$5
 
-if [[ $@ == "--help"  && "${BASH_SOURCE[0]}" != "${0}" ]]
-then
-    # "${BASH_SOURCE[0]}" != "${0}" script is being sourced
-    # This condition is true ONLY when --help is passed in the init script.
-    # In this scenario we just want to print the help message and NOT exit.
-    source ~/binaries/readparams-tkgtanzu.sh --printhelp
-    return_or_exit # We do not want to exit. We just dont want to continue the rest.
-fi
+    export $(cat /root/.env | xargs)
+    export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
 
-if [[ $isreturn == 'y' ]]
-then
-    return
-fi
-
-result=$(source ~/binaries/readparams-tkgtanzu.sh $@)
-# source ~/binaries/readparams.sh $@
-
-if [[ $result == *@("Error"|"help")* ]]
-then
-    printf "Error: $result\n"
-    printf "\nProvide valid params\n"
-    source ~/binaries/readparams-tkgtanzu.sh --printhelp
-    return_or_exit
-else
-    export $(echo $result | xargs)
-fi
-
-if [[ $isreturn == 'y' ]]
-then
-    return
-fi
-
-
-isexist=$(tanzu version)
-if [[ -n $isexist ]]
-then
-    ISINSTALLED=$(find ~/.local/share/tanzu-cli/* -printf '%f\n' | grep "login$")
-    if [[ -z $ISINSTALLED ]]
+    local isexist=$(tanzu version)
+    if [[ -n $isexist ]]
     then
-        printf "\n\ntanzu plugin login not found. installing...\n"
-        install_tanzu_plugin
-        printf "\n\n"
+        ISINSTALLED=$(find ~/.local/share/tanzu-cli/* -printf '%f\n' | grep "login$")
+        if [[ -z $ISINSTALLED ]]
+        then
+            printf "\n\ntanzu plugin login not found. installing...\n"
+            install_tanzu_plugin
+            printf "\n\n"
+        fi
+        ISINSTALLED=$(find ~/.local/share/tanzu-cli/* -printf '%f\n' | grep "package$")
+        if [[ -z $ISINSTALLED ]]
+        then
+            printf "\n\ntanzu plugin login not found. installing...\n"
+            install_tanzu_plugin
+            printf "\n\n"
+        fi
+    else
+        printf "\n\n\nTanzu CLI does not exist."
+        sleep 1
+        printf "\nPlease place the tanzu cli tar file in the binaries directory to use tkgtanzu wizard\n\nYou must perform \"./start.sh/bat forcebuild\" to rebuild with tanzu cli\n"
+        sleep 1
+        return_or_exit
     fi
-    ISINSTALLED=$(find ~/.local/share/tanzu-cli/* -printf '%f\n' | grep "package$")
-    if [[ -z $ISINSTALLED ]]
+
+    if [[ $isreturn == 'y' ]]
     then
-        printf "\n\ntanzu plugin login not found. installing...\n"
-        install_tanzu_plugin
-        printf "\n\n"
+        return
     fi
-else
-    printf "\n\n\nTanzu CLI does not exist."
-    sleep 1
-    printf "\nPlease place the tanzu cli tar file in the binaries directory to use tkgtanzu wizard\n\nYou must perform \"./start.sh/bat forcebuild\" to rebuild with tanzu cli\n"
-    sleep 1
-    return_or_exit
-fi
-
-if [[ $isreturn == 'y' ]]
-then
-    return
-fi
 
 
-if [[ -n $createcontext || -n $onboardworkloadcluster ]]
-then
-    isexist=$(tanzu config server list -o json | jq '.[].context' | xargs)
-    if [[ -z $isexist || $isexist != $TKG_SUPERVISOR_ENDPOINT ]]
+
+    if [[ $createcontext == 'y' || $onboardworkloadcluster == 'y' ]]
     then
-        printf "\nTanzu context not found matching with $TKG_SUPERVISOR_ENDPOINT. Creating new....\n"
-        source ~/binaries/tanzuwizard/tanzu-create-context.sh
+        isexist=$(tanzu config server list -o json | jq '.[].context' | xargs)
+        if [[ -z $isexist || $isexist != $TKG_SUPERVISOR_ENDPOINT ]]
+        then
+            printf "\nTanzu context not found matching with $TKG_SUPERVISOR_ENDPOINT. Creating new....\n"
+            source ~/binaries/tanzuwizard/tanzu-create-context.sh
+            doTanzuCreateContext
+        fi
     fi
-fi
 
-if [[ -n $onboardworkloadcluster ]]
-then
-    printf "\n\nstarting onboard of workload cluster...\n\n"
-    source ~/binaries/tanzuwizard/tanzu-onboard-workloadcluster.sh $clusterendpoint $clustername
-fi
+    if [[ $onboardworkloadcluster == 'y' && -n $clusterendpoint && -n $clustername ]]
+    then
+        printf "\n\nstarting onboard of workload cluster...\n\n"
+        source ~/binaries/tanzuwizard/tanzu-onboard-workloadcluster.sh
+        doOnboardWorkloadCluster $clusterendpoint $clustername
+    fi
 
-if [[ -n $installpackage ]]
-then
-    printf "\n\nstarting tanzu package installation...\n\n"
-    source ~/binaries/tanzuwizard/tanzu-install-package.sh $installpackage
-fi
+    if [[ -n $installpackage ]]
+    then
+        printf "\n\nstarting tanzu package installation...\n\n"
+        source ~/binaries/tanzuwizard/tanzu-install-package.sh
+        doTanzuInstallPackage $installpackage
+    fi
+}
+
+
+
+
+
 
 

@@ -27,7 +27,7 @@ while true ; do
                 "" ) switchtosupervisor='y'; output=$(printf "$output\nswitchtosupervisor=y") ; shift 2 ;;
                 * ) switchtosupervisor='y' ; output=$(printf "$output\nswitchtosupervisor=y") ; shift 2 ;;
             esac ;;
-        -s | --switch-to-workload )
+        -w | --switch-to-workload )
             case "$2" in
                 " " ) switchtoworkload='y'; output=$(printf "$output\nswitchtoworkload=y") ; shift 2 ;;
                 * ) switchtoworkload='y' ; output=$(printf "$output\nswitchtoworkload=y") ; shift 1 ;;

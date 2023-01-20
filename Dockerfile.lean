@@ -41,5 +41,7 @@ RUN chmod +x /usr/local/tanzu-cluster.volumeconfig.template
 
 COPY binaries/init.sh /usr/local/ 
 RUN chmod +x /usr/local/init.sh
+COPY binaries/merlin.sh /usr/local/bin/ 
+RUN chmod +x /usr/local/bin/merlin
 
 ENTRYPOINT ["/usr/local/init.sh"]
