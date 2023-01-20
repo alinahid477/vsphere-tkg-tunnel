@@ -104,7 +104,7 @@ function executeCommand () {
         return 1
     fi
 
-    if [[ -n $installpackage == 'y' ]]
+    if [[ -n $installpackage ]]
     then       
         tkgtanzu 'n' 'n' 'n' 'n' $installpackage
         unset installpackage
