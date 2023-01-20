@@ -162,11 +162,11 @@ function executeCommand () {
 
 
 TEMP='getopt -o ste:n:lbi:wy:v:j:k:m:o:p:q:r:u:x:z:a:h'
-TEMP=+' --long'
+TEMP+=' --long'
 
-TEMP=+' switch-to-supervisor,switch-to-workload,cluster-endpoint:,cluster-name:,'
+TEMP+=' switch-to-supervisor,switch-to-workload,cluster-endpoint:,cluster-name:,'
 
-TEMP=+' create-context,onboard-workload-cluster,install-package:,'
+TEMP+=' create-context,onboard-workload-cluster,install-package:,'
 
 TEMP+='wizard,name:,vsphere-namespace:,control-plane-count:,control-plane-vm-class:,control-plane-storage:,'
 TEMP+='worker-node-count:,worker-node-vm-class:,worker-node-storage:,'
@@ -175,6 +175,7 @@ TEMP+='volume-mount-size:,volume-mount-path:,volume-mount-name:,'
 TEMP+='kubernetes-version:,'
 
 TEMP+='help -n'
+
 TEMP=`$TEMP $0 -- "$@"`
 eval set -- "$TEMP"
 # echo $TEMP;
