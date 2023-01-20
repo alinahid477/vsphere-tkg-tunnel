@@ -1,6 +1,6 @@
 #!/bin/bash
 export $(cat /root/.env | xargs)
-export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
+export KUBECTL_VSPHERE_PASSWORD=$TKG_VSPHERE_CLUSTER_PASSWORD
 
 unset switchtosupervisor
 unset switchtoworkload
@@ -16,6 +16,7 @@ then
     return # We do not want to exit. We just dont want to continue the rest.
 fi
 
+printf "\n\n\nDBG\n\n\n"
 result=$(source ~/binaries/readparams.sh $@)
 # source ~/binaries/readparams.sh $@
 
@@ -83,8 +84,10 @@ fi
 
 printf "\n\n\n***********Starting connection...*************\n"
 
-
-EXISTING_JWT_EXP=$(awk '/users/{flag=1} flag && /'$TKG_VSPHERE_CLUSTER_ENDPOINT'/{flag2=1} flag2 && /token:/ {print $NF;exit}' /root/.kube/config | jq -R 'split(".") | .[1] | @base64d | fromjson | .exp')
+if [[ -f $HOME/.kube/config ]]
+then
+    EXISTING_JWT_EXP=$(awk '/users/{flag=1} flag && /'$TKG_VSPHERE_CLUSTER_ENDPOINT'/{flag2=1} flag2 && /token:/ {print $NF;exit}' /root/.kube/config | jq -R 'split(".") | .[1] | @base64d | fromjson | .exp')
+fi
 
 if [ -z "$EXISTING_JWT_EXP" ]
 then

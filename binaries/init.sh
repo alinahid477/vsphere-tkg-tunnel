@@ -3,7 +3,10 @@
 export $(cat /root/.env | xargs)
 export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
 
-chmod 600 /root/.ssh/id_rsa
+if [[ -f $HOME/.ssh/id_rsa ]]
+then
+    chmod 600 /root/.ssh/id_rsa
+fi
 printf "\n\nsetting executable permssion to all binaries sh\n\n"
 ls -l /root/binaries/*.sh | awk '{print $9}' | xargs chmod +x
 ls -l /root/binaries/tanzuwizard/*.sh | awk '{print $9}' | xargs chmod +x
