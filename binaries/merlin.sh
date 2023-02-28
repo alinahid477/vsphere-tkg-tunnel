@@ -73,6 +73,8 @@ function helpFunction()
 }
 
 
+
+
 function executeCommand () {
     if [[ $switchtosupervisor == 'y' ]]
     then
