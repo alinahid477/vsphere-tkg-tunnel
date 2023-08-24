@@ -17,48 +17,16 @@ return_or_exit()
 
 install_tanzu_plugin()
 {
-    tanzubundlename=''
-    printf "\nChecking tanzu tar file...\n\n"
-    cd /tmp
-    sleep 1
-    numberoftarfound=$(find ./*tar* -type f -printf "." | wc -c)
-    if [[ $numberoftarfound == 1 ]]
+    printf "\n\n************Tanzu CLI**************\n\n"
+    source $HOME/binaries/scripts/install-tanzu-cli.sh
+    installTanzuCLI
+    ret=$?
+    if [[ $ret == 1 ]]
     then
-        tanzubundlename=$(find ./*tar* -printf "%f\n")
+        printf "\nERROR: Tanzu CLI was not successfully installed. Merling will not function without Tanzu CLI. Please check if you have place right tar file in the binaries directory.\n"
+        return 1
     fi
-    if [[ $numberoftarfound -gt 1 ]]
-    then
-        printf "\nfound more than 1 tar files..\n"
-        find ./*tar* -printf "%f\n"
-        printf "Error: only 1 tar file is allowed in ~/binaries dir.\n"
-        printf "\n\n"
-        exit 1
-    fi
-
-    if [[ $numberoftarfound -lt 1 ]]
-    then
-        printf "\nNo tanzu tar file found. Please place the tanzu bindle in ~/binaries and rebuild again to enable tkgtanzu wizard...\n"
-        exit 1
-    fi
-    printf "\nTanzu Tar file: $tanzubundlename. Installing..."
-    # sleep 1
-    # mkdir tanzu
-    # tar -xvf $tanzubundlename -C tanzu/
-
-    if [[ $tanzubundlename == "tce"* ]]
-    then
-        cd /tmp/tanzu/
-        tcefolder=$(ls | grep tce)
-        cd $tcefolder
-        export ALLOW_INSTALL_AS_ROOT=true
-        ./install.sh
-    else
-        cd /tmp/tanzu/cli/core
-        versionfolder=$(ls | grep v)
-        cd $versionfolder
-        # install core/$versionfolder/tanzu-core-linux_amd64 /usr/local/bin/tanzu
-        tanzu plugin install --local /tmp/tanzu/cli all
-    fi
+    printf "DONE\n\n\n"
 }
 
 # unset createcontext
