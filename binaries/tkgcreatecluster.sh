@@ -57,7 +57,7 @@ process_cidr_blocks()
 
 function doCreateCluster() {
 
-    export $(cat /root/.env | xargs)
+    test -f $HOME/.env && export $(cat $HOME/.env | xargs) || true
     export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
 
     local wizardmode=$1

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function doOnboardWorkloadCluster() {
-    export $(cat /root/.env | xargs)
+    test -f $HOME/.env && export $(cat $HOME/.env | xargs) || true
 
     local clusterendpoint=$1
     local clustername=$2

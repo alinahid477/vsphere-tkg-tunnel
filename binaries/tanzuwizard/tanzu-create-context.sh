@@ -12,7 +12,7 @@ function doTanzuCreateContext() {
         dotkgwizard 'y'
     fi
 
-    export $(cat /root/.env | xargs)
+    test -f $HOME/.env && export $(cat $HOME/.env | xargs) || true
     printf "\nPerforming tanzu login...."
     tanzu login --kubeconfig ~/.kube/config --name $TKG_SUPERVISOR_ENDPOINT --context $TKG_SUPERVISOR_ENDPOINT
 

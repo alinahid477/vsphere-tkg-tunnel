@@ -2,7 +2,7 @@
 
 function dotkgwizard() {
 
-    export $(cat /root/.env | xargs)
+    test -f $HOME/.env && export $(cat $HOME/.env | xargs) || true
     export KUBECTL_VSPHERE_PASSWORD=$TKG_VSPHERE_CLUSTER_PASSWORD
 
     local switchtosupervisor=$1

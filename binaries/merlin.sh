@@ -1,5 +1,5 @@
 #!/bin/bash
-export $(cat /root/.env | xargs)
+test -f $HOME/.env && export $(cat $HOME/.env | xargs) || true
 
 
 unset ishelp
