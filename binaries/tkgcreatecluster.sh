@@ -171,7 +171,7 @@ function doCreateCluster() {
             # for v1alpha1 we want sort reference (eg: 1.21.2)
             latestversion=$(kubectl get tkr --sort-by=.metadata.name -o jsonpath='{.items[-1:].metadata.name}' | grep -Po '(?<=v)[^-]+' | awk 'NR==1{print $1}')
         fi
-        printf "\n\n Getting tanzu kubernetes releases that are  compatible"
+        printf "\n\n Getting tanzu kubernetes releases that are  compatible...\n"
         kubectl get tkr
         printf "\n\nWhich kubernetes version would you like to use for this k8s cluster?"
         printf "\nHint:"
