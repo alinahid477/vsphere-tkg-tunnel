@@ -55,11 +55,10 @@ then
     fi
 fi
 
-
-
 isexists=$(docker images | grep "\<$name\>")
 if [[ -z $isexists || $forcebuild == "forcebuild" ]]
 then
-    docker build . -t $name
+    docker build --build-arg UID=$(id -u) --build-arg GID=$(id -g) . -t $name
 fi
-docker run -it --rm -v ${PWD}:/root/ --add-host kubernetes:127.0.0.1 --name $name $name
+# -v ${PWD}:/root/
+docker run -it --rm -v ${PWD}/shared:/home/shared -v /var/run/docker.sock:/var/run/docker.sock --privileged --add-host kubernetes:127.0.0.1 --name $name $name

@@ -96,11 +96,11 @@ docker run -it --rm -v ${PWD}:/root/ --add-host kubernetes:127.0.0.1 --name k8st
 ### Create ssh tunnel yourself
 Once you are in the docker container shell, to create ssh tunnel run below:
 
-`ssh -i /root/.ssh/id_rsa -4 -fNT -L 443:<supervisor cluster endpoint or ip>:443 ubuntu@10.79.142.40`
+`ssh -i $HOME/.ssh/id_rsa -4 -fNT -L 443:<supervisor cluster endpoint or ip>:443 ubuntu@10.79.142.40`
 
 Example:
 
-`ssh -i /root/.ssh/id_rsa -4 -fNT -L 443:192.168.220.2:443 ubuntu@10.79.142.40`
+`ssh -i $HOME/.ssh/id_rsa -4 -fNT -L 443:192.168.220.2:443 ubuntu@10.79.142.40`
 
 This will create ssh tunnel for login
 
@@ -130,10 +130,10 @@ so changed https://192.168.220.7:6443 to https://kubernetes:6443
 
 Then create ssh tunnel to workload k8s cluster
 
-`ssh -i /root/.ssh/id_rsa -4 -fNT -L 6443:<workload cluster ip>:6443 ubuntu@10.79.142.40`
+`ssh -i $HOME/.ssh/id_rsa -4 -fNT -L 6443:<workload cluster ip>:6443 ubuntu@10.79.142.40`
 
 example:
-`ssh -i /root/.ssh/id_rsa -4 -fNT -L 6443:192.168.220.7:6443 ubuntu@10.79.142.40`
+`ssh -i $HOME/.ssh/id_rsa -4 -fNT -L 6443:192.168.220.7:6443 ubuntu@10.79.142.40`
 
 check by running some kubectl commands
 
@@ -266,7 +266,7 @@ The docker run command will run the container and open shell access in the conta
 ### Create tunnel through bastion for login
 
 ```
-ssh -i /root/.ssh/id_rsa -4 -fNT -L 443:192.168.220.2:443 ubuntu@10.79.142.40
+ssh -i $HOME/.ssh/id_rsa -4 -fNT -L 443:192.168.220.2:443 ubuntu@10.79.142.40
 ```
 
 **Here:**
@@ -322,7 +322,7 @@ clusters:
 ### Create tunnel through bastion for kubectl'ing on workload cluster
 
 ```
-ssh -i /root/.ssh/id_rsa -4 -fNT -L 6443:192.168.220.4:6443 ubuntu@10.79.142.40
+ssh -i $HOME/.ssh/id_rsa -4 -fNT -L 6443:192.168.220.4:6443 ubuntu@10.79.142.40
 ```
 **Here:**
 

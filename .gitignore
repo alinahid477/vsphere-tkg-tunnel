@@ -68,6 +68,8 @@ binaries/*
 .ssh/*
 !.ssh/.gitkeep 
 yamls/*
-tanzu-clusters/*
-!tanzu-clusters/.gitkeep
+shared/tanzu-clusters/*
+!shared/tanzu-clusters/.gitkeep
 Dockerfile
+*.nogit
+tools/kubectl-vsphere

@@ -5,7 +5,7 @@ export KUBECTL_VSPHERE_PASSWORD=$(echo $TKG_VSPHERE_CLUSTER_PASSWORD | xargs)
 
 if [[ -f $HOME/.ssh/id_rsa ]]
 then
-    chmod 600 /root/.ssh/id_rsa
+    chmod 600 $HOME/.ssh/id_rsa
 fi
 
 
@@ -45,8 +45,8 @@ fi
 
 
 printf "\n\nsetting executable permssion to all binaries sh\n\n"
-ls -l /root/binaries/*.sh | awk '{print $9}' | xargs chmod +x
-ls -l /root/binaries/tanzuwizard/*.sh | awk '{print $9}' | xargs chmod +x
+ls -l $HOME/binaries/*.sh | awk '{print $9}' | xargs chmod +x
+ls -l $HOME/binaries/tanzuwizard/*.sh | awk '{print $9}' | xargs chmod +x
 
 
 IS_KUBECTL_VSPHERE_EXISTS=$(kubectl vsphere)
@@ -59,7 +59,7 @@ then
         printf "\n\nDid not find kubectl-vsphere binary in ~/binaries/.\nDownloding in ~/binaries/ directory..."
         if [[ -n $BASTION_HOST ]]
         then
-            ssh -i /root/.ssh/id_rsa -4 -fNT -L 443:$TKG_SUPERVISOR_ENDPOINT:443 $BASTION_USERNAME@$BASTION_HOST
+            ssh -i $HOME/.ssh/id_rsa -4 -fNT -L 443:$TKG_SUPERVISOR_ENDPOINT:443 $BASTION_USERNAME@$BASTION_HOST
             curl -kL https://localhost/wcp/plugin/linux-amd64/vsphere-plugin.zip -o ~/binaries/vsphere-plugin.zip
             sleep 1
             fuser -k 443/tcp
@@ -81,6 +81,8 @@ then
     exit 1
 fi
 
+#echo dev | sudo -S chmod 666 /var/run/docker.sock
+
 source ~/binaries/tkgwizard.sh
 dotkgwizard 'n' 'n' 'n' 'n' 'y'
 
@@ -91,5 +93,3 @@ printf "merlin --help"
 printf "\n=========================================================\n"
 printf "\n\n"
 cd ~
-
-/bin/bash

@@ -11,47 +11,64 @@ RUN apt-get update && apt-get install -y \
 	curl \
 	unzip \
     openssh-client \
+	libdigest-sha-perl \
 	psmisc \
 	nano \
 	less \
 	net-tools \
+	docker.io \
+	sudo \
 	&& curl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
 	&& chmod +x /usr/local/bin/kubectl
 
 # COPY .ssh/id_rsa /root/.ssh/
-# RUN chmod 600 /root/.ssh/id_rsa
+# RUN chmod 600 $HOME/.ssh/id_rsa
 
 RUN curl -o /usr/local/bin/jq -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && \
   	chmod +x /usr/local/bin/jq
 
-COPY binaries/tanzu-cluster.v1alpha1.template /usr/local/ 
-RUN chmod +x /usr/local/tanzu-cluster.v1alpha1.template
+RUN curl -L https://carvel.dev/install.sh | bash
 
-COPY binaries/tanzu-cluster.v1alpha2.template /usr/local/ 
-RUN chmod +x /usr/local/tanzu-cluster.v1alpha2.template
 
-COPY binaries/tanzu-cluster.volumeconfig.template /usr/local/ 
-RUN chmod +x /usr/local/tanzu-cluster.volumeconfig.template
 
-# COPY binaries/kubectl-vsphere /usr/local/bin/ 
+# COPY tools/kubectl-vsphere /usr/local/bin/ 
 # RUN chmod +x /usr/local/bin/kubectl-vsphere
 
 # COPY binaries/tmc /usr/local/bin/ 
 # RUN chmod +x /usr/local/bin/tmc
 
-ENV TANZU_CLI_VERSION=v0.90.1
-COPY binaries/tanzu-cli-bundle-linux-amd64.tar /tmp/
-RUN cd /tmp && mkdir tanzu \
-	&& tar -xvf tanzu-cli-bundle-linux-amd64.tar -C tanzu/ \
-	&& cd /tmp/tanzu/cli \
-	&& install core/v${TANZU_CLI_VERSION}/tanzu-core-linux_amd64 /usr/local/bin/tanzu \
-	&& cd /tmp/tanzu \
-	&& tanzu plugin clean
 
+RUN useradd -m dev -d /home/dev -s /bin/bash && echo "dev:dev" | chpasswd && adduser dev sudo
+RUN usermod -g docker dev
+VOLUME [/var/run/docker.sock]
+USER dev
+WORKDIR /home/dev
+ENV PATH="$PATH:/home/dev/.local/bin"
+RUN echo $PATH
+RUN mkdir -p $HOME/.ssh/
+RUN mkdir -p $HOME/.kube/
+RUN mkdir -p $HOME/binaries/
+RUN mkdir -p $HOME/.local/bin
 
-COPY binaries/init.sh /usr/local/ 
+# COPY binaries/tanzu-cli-bundle-linux-amd64.tar /tmp/
+RUN curl -L  https://github.com/vmware-tanzu/tanzu-cli/releases/download/$(curl -s https://api.github.com/repos/vmware-tanzu/tanzu-cli/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')/tanzu-cli-linux-amd64.tar.gz -o /tmp/tanzu-cli-linux-amd64.tar.gz
+RUN curl -s https://raw.githubusercontent.com/alinahid477/common-merlin-scripts/main/scripts/install-tanzu-cli-standalone.sh | bash
+
+COPY --chown=1000 binaries/tanzu-cluster.v1alpha1.template /usr/local/ 
+RUN chmod +x /usr/local/tanzu-cluster.v1alpha1.template
+
+COPY --chown=1000 binaries/tanzu-cluster.v1alpha2.template /usr/local/ 
+RUN chmod +x /usr/local/tanzu-cluster.v1alpha2.template
+
+COPY --chown=1000 binaries/tanzu-cluster.volumeconfig.template /usr/local/ 
+RUN chmod +x /usr/local/tanzu-cluster.volumeconfig.template
+
+COPY --chown=1000 binaries/init.sh /usr/local/ 
 RUN chmod +x /usr/local/init.sh
-COPY binaries/merlin.sh /usr/local/bin/merlin
+COPY --chown=1000 binaries/merlin.sh /usr/local/bin/merlin
 RUN chmod +x /usr/local/bin/merlin
 
-ENTRYPOINT ["/usr/local/init.sh"]
+
+RUN ./usr/local/init.sh
+
+CMD [ "/bin/bash"]
