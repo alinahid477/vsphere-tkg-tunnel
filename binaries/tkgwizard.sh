@@ -160,7 +160,7 @@ function dotkgwizard() {
                 read -p "Confirm if the above cluster is correct? [y/n] " yn
                 case $yn in
                     [Yy]* ) printf "\nyou confirmed yes\n"; break;;
-                    [Nn]* ) printf "\n\nYou said no. \n\nExiting...\n\n"; exit;;
+                    [Nn]* ) printf "\n\nYou said no...Adjust via merlin command\n"; break;;
                     * ) echo "Please answer yes or no.";
                 esac
             done

@@ -75,3 +75,4 @@ Dockerfile
 tools/kubectl-vsphere
 shared/mydev
 shared/.ssh/id_rsa
+shared/scripts
