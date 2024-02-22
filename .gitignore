@@ -73,3 +73,5 @@ shared/tanzu-clusters/*
 Dockerfile
 *.nogit
 tools/kubectl-vsphere
+shared/mydev
+shared/.ssh/id_rsa

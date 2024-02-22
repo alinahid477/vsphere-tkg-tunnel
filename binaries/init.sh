@@ -82,6 +82,13 @@ then
 fi
 
 #echo dev | sudo -S chmod 666 /var/run/docker.sock
+cat > ~/.ssh/config <<-EOF
+Host $BASTION_HOST
+     HostName $BASTION_HOST
+     User $BASTION_USERNAME
+     IdentityFile ~/.ssh/id_rsa
+EOF
+docker context create bastion --docker "host=ssh://$BASTION_USERNAME@$BASTION_HOST"
 
 source ~/binaries/tkgwizard.sh
 dotkgwizard 'n' 'n' 'n' 'n' 'y'
@@ -93,3 +100,4 @@ printf "merlin --help"
 printf "\n=========================================================\n"
 printf "\n\n"
 cd ~
+/bin/bash
