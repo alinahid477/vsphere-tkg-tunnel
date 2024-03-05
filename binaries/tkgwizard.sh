@@ -94,7 +94,7 @@ function dotkgwizard() {
             rm -R $HOME/.kube/cache
             if [ -z "$TKG_VSPHERE_CLUSTER_NAME" ]
             then
-                printf "\n\n\n***********Creating Tunnel through bastion $BASTION_USERNAME@$BASTION_HOST, K8s:$TKG_VSPHERE_CLUSTER_NAME...*************\n"
+                printf "\n\n\n***********Creating Tunnel through bastion $BASTION_USERNAME@$BASTION_HOST, supervusor:$TKG_SUPERVISOR_ENDPOINT...*************\n"
                 ssh-keyscan $BASTION_HOST > $HOME/.ssh/known_hosts
                 ssh -i $HOME/.ssh/id_rsa -4 -fNT -L 443:$TKG_SUPERVISOR_ENDPOINT:443 $BASTION_USERNAME@$BASTION_HOST
                 ssh -i $HOME/.ssh/id_rsa -4 -fNT -L 6443:$TKG_SUPERVISOR_ENDPOINT:6443 $BASTION_USERNAME@$BASTION_HOST
